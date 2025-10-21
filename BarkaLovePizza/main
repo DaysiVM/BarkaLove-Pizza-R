@@ -1,0 +1,82 @@
+import flet as ft
+from screens.registro import pantalla_registro
+from screens.modificar import pantalla_modificar
+from flet import Dropdown, Checkbox
+from screens.inicio import pantalla_inicio
+import inspect, sys
+
+ingredientes_data = [
+    {"label": "Queso extra", "img": "queso.png"},
+    {"label": "Pepperoni", "img": "pepperoni.png"},
+    {"label": "Champiñones", "img": "champi.png"},
+    {"label": "Aceitunas", "img": "aceitunas.png"},
+    {"label": "Pimientos", "img": "pimientos.png"},
+]
+
+def main(page: ft.Page):
+    page.title = "Barka Love Pizza 🍕"
+    page.bgcolor = "#FFF8E1"
+    page.horizontal_alignment = "center"
+    page.vertical_alignment = "center"
+    page.padding = 20
+
+    # Lista mutable para indicar si hay pedido enviado
+    pedido_enviado_ref = [False]
+
+    # Elementos compartidos
+    masa = Dropdown(
+        label="Tipo de masa",
+        options=[ft.dropdown.Option("Delgada"), ft.dropdown.Option("Gruesa")],
+        width=250
+    )
+    salsa = Dropdown(
+        label="Salsa",
+        options=[ft.dropdown.Option("Tomate"), ft.dropdown.Option("BBQ"), ft.dropdown.Option("Blanca")],
+        width=250
+    )
+    checkbox_ingredientes = [Checkbox(label=i["label"]) for i in ingredientes_data]
+
+    # Función para mostrar pantallas
+    def mostrar_pantalla(nombre):
+        page.clean()
+        if nombre == "inicio":
+            page.add(pantalla_inicio(pedido_enviado_ref[0], mostrar_pantalla))
+        elif nombre == "registro":
+            page.add(pantalla_registro(
+                page, masa, salsa, checkbox_ingredientes, ingredientes_data,
+                mostrar_pantalla, pedido_enviado_ref
+            ))
+        elif nombre == "modificar":
+            # Depuración: mostrar información del objeto antes de invocar
+            try:
+                print('DEBUG: pantalla_modificar object =', pantalla_modificar)
+                print('DEBUG: module =', getattr(pantalla_modificar, '__module__', None))
+                try:
+                    sig = inspect.signature(pantalla_modificar)
+                    print('DEBUG: signature =', sig)
+                except Exception as e:
+                    print('DEBUG: could not get signature:', e)
+
+                # Intentar invocar y capturar errores para más contexto
+                try:
+                    page.add(pantalla_modificar(
+                        page, masa, salsa, checkbox_ingredientes, mostrar_pantalla
+                    ))
+                except TypeError as te:
+                    print('ERROR calling pantalla_modificar:', te)
+                    print('ERROR repr:', repr(pantalla_modificar))
+                    print('ERROR type:', type(pantalla_modificar))
+                    # listar atributos relevantes
+                    print('ERROR dir:', [n for n in dir(pantalla_modificar) if not n.startswith('_')])
+                    raise
+            except Exception:
+                # Re-raise para que Flet lo capture y muestre el traceback
+                raise
+        page.update()
+
+    mostrar_pantalla("inicio")
+
+ft.app(target=main, assets_dir="assets")
+
+
+
