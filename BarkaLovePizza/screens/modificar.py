@@ -8,7 +8,10 @@ def pantalla_modificar(page, masa, salsa, checkbox_ingredientes, mostrar_pantall
     for p in cargar_pedidos():
         hora_pedido = datetime.fromisoformat(p["hora"])
         if p in pedidos_modificables():
-            lista.append(ft.TextButton(f"Modificar Orden #{p['orden']}", on_click=lambda e, pid=p['orden']: modificar(page, pid, masa, salsa, checkbox_ingredientes, mostrar_pantalla)))
+            lista.append(ft.TextButton(
+                f"Modificar Orden #{p['orden']}",
+                on_click=lambda e, pid=p['orden']: mostrar_pantalla('registro', editar_orden=pid)
+            ))
         else:
             lista.append(ft.Text(f"Orden #{p['orden']} (No modificable)", color="grey"))
 

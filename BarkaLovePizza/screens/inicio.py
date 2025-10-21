@@ -1,6 +1,6 @@
 import flet as ft
 
-def pantalla_inicio(pedido_enviado, mostrar_pantalla):
+def pantalla_inicio(pedido_enviado, pedido_finalizado, mostrar_pantalla):
     rojo = "#E63946"
     amarillo = "#FFD93D"
 
@@ -19,7 +19,8 @@ def pantalla_inicio(pedido_enviado, mostrar_pantalla):
         ),
     ]
 
-    if pedido_enviado:
+    # Mostrar modificar solo si hay un pedido enviado y aún no se está preparando o ya finalizó
+    if pedido_enviado and not pedido_finalizado:
         controles.append(
             ft.ElevatedButton(
                 "Modificar pedido",

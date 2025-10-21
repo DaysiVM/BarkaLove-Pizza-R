@@ -1,9 +1,9 @@
 import flet as ft
 import random
 from datetime import datetime
-from utils.pedidos import guardar_pedido
+from utils.pedidos import guardar_pedido, actualizar_pedido, obtener_pedido
 
-def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes, mostrar_pantalla, pedido_enviado_ref):
+def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes, mostrar_pantalla, pedido_enviado_ref, pedido_finalizado_ref, current_order_ref, editar_orden=None):
     rojo = "#E63946"
     amarillo = "#FFD93D"
 
@@ -13,24 +13,57 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes, mo
             page.snack_bar.open = True
             page.update()
             return
-
-        numero_orden = random.randint(1000, 9999)
-        pedido = {
-            "orden": numero_orden,
-            "masa": masa.value,
-            "salsa": salsa.value,
-            "ingredientes": [c.label for c in checkbox_ingredientes if c.value],
-            "hora": datetime.now().isoformat(),
-        }
-        guardar_pedido(pedido)
-        pedido_enviado_ref[0] = True
-        from screens.preparar import mostrar_carga_pizza
-        mostrar_carga_pizza(page, numero_orden, mostrar_pantalla)
+        ingredientes_seleccionados = [c.label for c in checkbox_ingredientes if c.value]
+        if editar_orden is None:
+            numero_orden = random.randint(1000, 9999)
+            pedido = {
+                "orden": numero_orden,
+                "masa": masa.value,
+                "salsa": salsa.value,
+                "ingredientes": ingredientes_seleccionados,
+                "hora": datetime.now().isoformat(),
+            }
+            guardar_pedido(pedido)
+            pedido_enviado_ref[0] = True
+            pedido_finalizado_ref[0] = False
+            current_order_ref[0] = numero_orden
+            # Navegar a la pantalla de preparación a través del dispatcher principal
+            mostrar_pantalla('preparar', numero_orden=numero_orden)
+        else:
+            # actualizar pedido existente
+            pedido = {
+                "orden": editar_orden,
+                "masa": masa.value,
+                "salsa": salsa.value,
+                "ingredientes": ingredientes_seleccionados,
+            }
+            try:
+                actualizar_pedido(pedido)
+            except Exception as ex:
+                page.snack_bar = ft.SnackBar(ft.Text(f"Error al actualizar: {ex}", color="white"), bgcolor=rojo)
+                page.snack_bar.open = True
+                page.update()
+                return
+            # volver a inicio o a preparar según flujo
+            mostrar_pantalla("inicio")
 
     controles_ingredientes = [
         ft.Row([ft.Image(src=i["img"], width=35, height=35), checkbox_ingredientes[idx]]) 
         for idx, i in enumerate(ingredientes)
     ]
+
+    # Si estamos editando, cargar datos del pedido y rellenar controles
+    if editar_orden is not None:
+        existente = obtener_pedido(editar_orden)
+        if existente:
+            masa.value = existente.get('masa')
+            salsa.value = existente.get('salsa')
+            for c in checkbox_ingredientes:
+                c.value = c.label in existente.get('ingredientes', [])
+        else:
+            page.snack_bar = ft.SnackBar(ft.Text("Pedido a editar no encontrado.", color="white"), bgcolor=rojo)
+            page.snack_bar.open = True
+            page.update()
 
     return ft.Column(
         [
