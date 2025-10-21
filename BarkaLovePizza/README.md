@@ -24,3 +24,13 @@ python main
 Notas:
 - Si la app no abre, asegúrate de tener una versión compatible de Python y que `flet` esté instalada.
 - Imágenes y assets deben estar en la carpeta `assets`.
+
+GIF de carga (opcional):
+
+Si quieres mostrar una animación GIF mientras la pizza se prepara, descarga un GIF y ponlo en:
+
+```
+assets/pizza_loading.gif
+```
+
+La pantalla de preparación usará ese GIF automáticamente si el archivo existe. Si no lo colocas, la pantalla usa una secuencia de imágenes (pizza_1.png ... pizza_5.png) como fallback.
