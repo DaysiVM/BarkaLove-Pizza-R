@@ -1,4 +1,4 @@
-# screens/registro.py
+# screens/registro.py (versión compacta y responsive)
 import flet as ft
 import random
 from datetime import datetime
@@ -10,36 +10,73 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                       mostrar_pantalla, pedido_enviado_ref, pedido_finalizado_ref,
                       current_order_ref, editar_orden=None):
 
-    # ====== Estilo base ======
+    # ====== Estilo base y helpers ======
     page.session.set("inicio_registro_ts", time.monotonic())
+    page.scroll = ft.ScrollMode.AUTO  # permite hacer scroll en pantallas bajas
     rojo = "#E63946"
     amarillo = "#FFD93D"
     negro = "#1F1F1F"
     crema = "#FFF8E7"
     azul = "#2196F3"
-    S_FIELD_W = 360  # ancho estándar para TODOS los campos
+
+    # Breakpoints por ancho y ajustes por altura
+    def bp():
+        w = page.width or 1280
+        h = page.height or 800
+        size = "xs" if w < 900 else ("md" if w < 1280 else "lg")
+        return size, w, h
+
+    state = {
+        "field_w": 320,
+        "pizza_size": 560,
+        "cart_h": 420,
+        "title_size": 32,
+        "text_size": 16,
+        "label_size": 18,
+        "ing_img": 32,
+        "pad": 16,
+    }
+
+    def recompute_sizes():
+        size, w, h = bp()
+        if size == "lg":
+            state["field_w"] = 320
+            state["pizza_size"] = 560
+            state["cart_h"] = 420
+        elif size == "md":
+            state["field_w"] = 300
+            state["pizza_size"] = 420
+            state["cart_h"] = 360
+        else:  # xs
+            state["field_w"] = min(280, int(w * 0.9))
+            state["pizza_size"] = 320
+            state["cart_h"] = 300
+
+        # Si la altura es muy baja, compacta más
+        if h < 740:
+            state["pizza_size"] = max(280, int(state["pizza_size"] * 0.9))
+            state["cart_h"] = max(260, int(state["cart_h"] * 0.9))
+
+    recompute_sizes()
 
     # ====== Campos de cliente ======
-    nombre_cliente = ft.TextField(label="Nombre del cliente", width=S_FIELD_W, color=negro, text_size=18)
+    nombre_cliente = ft.TextField(label="Nombre del cliente", width=state["field_w"], color=negro, text_size=16)
 
-    # Forzar color / tamaño / ancho en selectores de masa y salsa (recibidos desde el router)
+    # Forzar color / tamaño / ancho en selectores de masa y salsa (inyectados por router)
     masa.color = negro
     salsa.color = negro
-    masa.text_size = 18
-    salsa.text_size = 18
-    masa.width = S_FIELD_W
-    salsa.width = S_FIELD_W
+    masa.text_size = 16
+    salsa.text_size = 16
+    masa.width = state["field_w"]
+    salsa.width = state["field_w"]
 
     # ====== TAMAÑO (debajo de salsa, SOLO opciones) ======
     tamano = ft.Dropdown(
         label="Tamaño",
-        width=S_FIELD_W,
+        width=state["field_w"],
         color=negro,
-        text_size=18,
-        options=[
-            ft.dropdown.Option("Individual"),
-            ft.dropdown.Option("Familiar"),
-        ],
+        text_size=16,
+        options=[ft.dropdown.Option("Individual"), ft.dropdown.Option("Familiar")],
     )
 
     # ====== INGREDIENTES: agregar Jamón y Piña y uniformar estilo ======
@@ -47,7 +84,6 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
     chk_pina = ft.Checkbox(label="Piña", value=False)
     for c in [chk_jamon, chk_pina]:
         c.label_style = ft.TextStyle(color=negro, size=16)
-
     for c in checkbox_ingredientes:
         c.label_style = ft.TextStyle(color=negro, size=16)
 
@@ -58,7 +94,7 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
     checkbox_ext = list(checkbox_ingredientes) + [chk_jamon, chk_pina]
 
     # ====== CANTIDAD (+ / -) ======
-    cantidad_valor = ft.Text("1", size=22, color=negro)
+    cantidad_valor = ft.Text("1", size=18, color=negro)
 
     def incrementar(e):
         val = int(cantidad_valor.value)
@@ -74,25 +110,24 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
 
     cantidad_row = ft.Row(
         [
-            ft.Text("Cantidad:", color=negro, size=18, weight=ft.FontWeight.W_600),
-            ft.IconButton(icon=ft.Icons.REMOVE, on_click=decrementar, bgcolor=amarillo),
+            ft.Text("Cantidad:", color=negro, size=16, weight=ft.FontWeight.W_600),
+            ft.IconButton(icon=ft.Icons.REMOVE, on_click=decrementar, bgcolor=amarillo, tooltip="-"),
             cantidad_valor,
-            ft.IconButton(icon=ft.Icons.ADD, on_click=incrementar, bgcolor=amarillo),
+            ft.IconButton(icon=ft.Icons.ADD, on_click=incrementar, bgcolor=amarillo, tooltip="+"),
         ],
         alignment=ft.MainAxisAlignment.START,
-        spacing=10,
+        spacing=8,
     )
 
-    # ====== PREVIEW DE PIZZA (grande, centrada) ======
-    pizza_size = 720
+    # ====== PREVIEW DE PIZZA (compacta y centrada) ======
     pizza_imagen = ft.Image(
         src="pizza_base.png",
-        width=pizza_size,
-        height=pizza_size,
+        width=state["pizza_size"],
+        height=state["pizza_size"],
         fit=ft.ImageFit.CONTAIN,
     )
 
-    # Prioridad de imagen completa: Pepperoni > Jamón > Pimientos > Champiñones > Aceitunas > Piña > Queso extra > base
+    # Prioridad de imagen completa
     def actualizar_imagen_pizza(e=None):
         seleccionados = [c.label for c in checkbox_ext if c.value]
         if "Pepperoni" in seleccionados:
@@ -119,7 +154,7 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
     # ====== Alerta inline (roja) sobre la pizza ======
     alert_text = ft.Text(
         "",
-        size=18,
+        size=16,
         color=rojo,
         weight=ft.FontWeight.W_700,
         text_align=ft.TextAlign.CENTER,
@@ -134,28 +169,23 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
             alert_text.value = ""
             page.update()
 
-    # Limpiar alerta cuando el usuario corrige algo relevante
     for ctrl in [masa, salsa, tamano]:
         ctrl.on_change = clear_alert
 
     # ====== Carrito a la derecha ======
-    carrito_items = []  # cada item: {"masa","salsa","tamano","ingredientes","cantidad"}
-    carrito_list = ft.ListView(expand=True, spacing=8, padding=0, auto_scroll=False)
-    carrito_header = ft.Text("Productos agregados", size=22, weight=ft.FontWeight.BOLD, color=negro)
-    carrito_total = ft.Text("Total de productos: 0", size=16, color=negro)
-    carrito_precio = ft.Text("Total a pagar: $0", size=18, weight=ft.FontWeight.W_600, color=negro)
+    carrito_items = []  # {"masa","salsa","tamano","ingredientes","cantidad"}
+    carrito_list = ft.ListView(expand=True, spacing=6, padding=0, auto_scroll=False)
+    carrito_header = ft.Text("Productos agregados", size=18, weight=ft.FontWeight.BOLD, color=negro)
+    carrito_total = ft.Text("Total de productos: 0", size=14, color=negro)
+    carrito_precio = ft.Text("Total a pagar: $0", size=16, weight=ft.FontWeight.W_600, color=negro)
 
     # Método de pago (derecha)
     metodo_pago = ft.Dropdown(
         label="Método de pago",
-        width=S_FIELD_W,
+        width=state["field_w"],
         color=negro,
-        text_size=18,
-        options=[
-            ft.dropdown.Option("Efectivo"),
-            ft.dropdown.Option("Tarjeta"),
-            ft.dropdown.Option("Transferencia"),
-        ],
+        text_size=16,
+        options=[ft.dropdown.Option("Efectivo"), ft.dropdown.Option("Tarjeta"), ft.dropdown.Option("Transferencia")],
         on_change=clear_alert,
     )
 
@@ -178,16 +208,16 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
             carrito_list.controls.append(
                 ft.Container(
                     bgcolor="#FFFFFF",
-                    padding=12,
+                    padding=10,
                     border_radius=8,
                     content=ft.Row(
                         [
                             ft.Column(
                                 [
-                                    ft.Text(f"Producto {idx+1}", size=18, weight=ft.FontWeight.W_600, color=negro),
-                                    ft.Text(resumen, size=16, color=negro),
+                                    ft.Text(f"Producto {idx+1}", size=16, weight=ft.FontWeight.W_600, color=negro),
+                                    ft.Text(resumen, size=14, color=negro),
                                 ],
-                                spacing=4,
+                                spacing=2,
                                 expand=True,
                             ),
                             ft.IconButton(
@@ -196,6 +226,8 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                                 on_click=eliminar_item(idx),
                                 bgcolor=rojo,
                                 icon_color="white",
+                                width=36,
+                                height=36,
                             ),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -203,19 +235,15 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                 )
             )
         carrito_total.value = f"Total de productos: {len(carrito_items)}"
-        unidades = _total_unidades()
-        carrito_precio.value = f"Total a pagar: ${unidades * 10}"
+        carrito_precio.value = f"Total a pagar: ${_total_unidades() * 10}"
         page.update()
 
     # ====== Agregar producto (columna central) ======
     def agregar_producto_click(e):
         faltantes = []
-        if not masa.value:
-            faltantes.append("tipo de masa")
-        if not salsa.value:
-            faltantes.append("salsa")
-        if not tamano.value:
-            faltantes.append("tamaño")
+        if not masa.value: faltantes.append("tipo de masa")
+        if not salsa.value: faltantes.append("salsa")
+        if not tamano.value: faltantes.append("tamaño")
         if faltantes:
             show_alert(f"Para agregar un producto falta: {', '.join(faltantes)}.")
             return
@@ -238,9 +266,9 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
         "Agregar producto",
         bgcolor=azul,
         color="white",
-        width=260,
-        height=55,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=12)),
+        width=220,
+        height=48,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=agregar_producto_click,
     )
 
@@ -268,19 +296,14 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                 show_alert("Selecciona el método de pago.")
                 return
 
-            # Permitir confirmar sin carrito si el producto actual está completo
             if len(carrito_items) == 0:
                 falt = []
-                if not masa.value:
-                    falt.append("tipo de masa")
-                if not salsa.value:
-                    falt.append("salsa")
-                if not tamano.value:
-                    falt.append("tamaño")
+                if not masa.value: falt.append("tipo de masa")
+                if not salsa.value: falt.append("salsa")
+                if not tamano.value: falt.append("tamaño")
                 if falt:
                     show_alert(f"Selecciona {', '.join(falt)} o agrega un producto al carrito.")
                     return
-
                 ingredientes_sel = [c.label for c in checkbox_ext if c.value]
                 carrito_items.append({
                     "masa": masa.value,
@@ -301,13 +324,11 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                     "metodo_pago": metodo_pago.value,
                     "items": carrito_items,
                     "hora": datetime.now().isoformat(),
-                    # Compatibilidad con pantallas previas (primer item)
                     "masa": first["masa"],
                     "salsa": first["salsa"],
                     "tamano": first.get("tamano"),
                     "ingredientes": first["ingredientes"],
                     "cantidad": first["cantidad"],
-                    # Total visual: $10 por unidad total
                     "total_visual": unidades * 10,
                     "moneda_visual": "USD",
                 }
@@ -369,42 +390,42 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
         "Confirmar pedido",
         bgcolor=amarillo,
         color=negro,
-        width=S_FIELD_W,
-        height=55,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=12)),
+        width=state["field_w"],
+        height=50,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=guardar_pedido_click,
     )
     btn_cancelar_derecha = ft.ElevatedButton(
         "Cancelar pedido",
         bgcolor=rojo,
         color="white",
-        width=S_FIELD_W,
-        height=50,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=12)),
+        width=state["field_w"],
+        height=46,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=cancelar_pedido_click,
     )
 
     # ====== Controles de ingredientes (con imágenes) ======
     controles_ingredientes = [
-        ft.Row([ft.Image(src=i["img"], width=40, height=40), checkbox_ext[idx]])
+        ft.Row([ft.Image(src=i["img"], width=state["ing_img"], height=state["ing_img"]), checkbox_ext[idx]])
         for idx, i in enumerate(ingredientes_ext)
     ]
 
     # ====== Formulario izquierda ======
-    formulario = ft.Column(
+    formulario_col = ft.Column(
         [
-            ft.Text("Registrar pedido 🍕", size=38, color=rojo, weight=ft.FontWeight.BOLD,
+            ft.Text("Registrar pedido 🍕", size=state["title_size"], color=rojo, weight=ft.FontWeight.BOLD,
                     text_align=ft.TextAlign.LEFT),
             ft.Divider(),
             nombre_cliente,
             masa,
             salsa,
-            tamano,      # <— SOLO el dropdown (sin texto lateral)
+            tamano,
             cantidad_row,
-            ft.Text("Ingredientes:", size=20, color=negro, weight=ft.FontWeight.BOLD),
-            ft.Column(controles_ingredientes, spacing=8),
+            ft.Text("Ingredientes:", size=18, color=negro, weight=ft.FontWeight.BOLD),
+            ft.Column(controles_ingredientes, spacing=6, scroll=ft.ScrollMode.AUTO),
         ],
-        spacing=12,
+        spacing=10,
         alignment=ft.MainAxisAlignment.START,
         expand=False,
     )
@@ -414,41 +435,39 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
         "⬅ Volver",
         bgcolor=rojo,
         color="white",
-        width=260,
-        height=50,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=12)),
+        width=200,
+        height=44,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=lambda _: mostrar_pantalla("inicio"),
     )
 
     col_central = ft.Column(
         [
             alert_text,
-            ft.Container(content=pizza_imagen, alignment=ft.alignment.center, padding=10),
-            ft.Column(
-                [btn_agregar_producto, btn_volver],
-                alignment=ft.MainAxisAlignment.CENTER,
-                horizontal_alignment="center",
-                spacing=16,
-            ),
+            ft.Container(content=pizza_imagen, alignment=ft.alignment.center),
+            ft.Row([btn_agregar_producto, btn_volver],
+                   alignment=ft.MainAxisAlignment.CENTER, spacing=12),
         ],
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=16,
+        spacing=12,
         expand=True,
     )
 
     # ====== Columna derecha (carrito + totales + pago + confirmar/cancelar) ======
+    carrito_box = ft.Container(
+        content=carrito_list,
+        bgcolor="#FFFFFF",
+        border_radius=10,
+        padding=10,
+        width=state["field_w"],
+        height=state["cart_h"],
+    )
+
     carrito_col = ft.Column(
         [
             carrito_header,
-            ft.Container(
-                content=carrito_list,
-                bgcolor="#FFFFFF",
-                border_radius=12,
-                padding=12,
-                width=360,
-                height=520,
-            ),
+            carrito_box,
             carrito_total,
             carrito_precio,
             ft.Divider(),
@@ -456,27 +475,53 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
             btn_confirmar_derecha,
             btn_cancelar_derecha,
         ],
-        spacing=12,
+        spacing=10,
         alignment=ft.MainAxisAlignment.START,
         expand=False,
     )
 
-    # ====== Layout final ======
-    estructura = ft.Row(
-        [
-            ft.Container(formulario, width=420),
-            ft.VerticalDivider(width=1, color="#E0E0E0"),
-            col_central,
-            ft.VerticalDivider(width=1, color="#E0E0E0"),
-            carrito_col,
-        ],
+    # ====== Responsive layout con ResponsiveRow ======
+    form_cell = ft.Container(formulario_col, padding=0, col={"xs": 12, "md": 4, "lg": 4})
+    center_cell = ft.Container(col_central, padding=0, col={"xs": 12, "md": 5, "lg": 5})
+    cart_cell = ft.Container(carrito_col, padding=0, col={"xs": 12, "md": 3, "lg": 3})
+
+    grid = ft.ResponsiveRow(
+        controls=[form_cell, center_cell, cart_cell],
+        columns=12,
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+        vertical_alignment=ft.CrossAxisAlignment.START,
+        run_spacing=12,
+        spacing=12,
     )
 
-    return ft.Container(
-        content=estructura,
+    root = ft.Container(
+        content=grid,
         bgcolor=crema,
-        padding=30,
+        padding=state["pad"],
         expand=True,
         alignment=ft.alignment.top_center,
     )
+
+    # ====== on_resize para recalcular tamaños ======
+    def on_resize(e):
+        recompute_sizes()
+
+        # actualizar widths/alturas
+        fw = state["field_w"]
+        nombre_cliente.width = fw
+        masa.width = fw
+        salsa.width = fw
+        tamano.width = fw
+        metodo_pago.width = fw
+
+        pizza_imagen.width = state["pizza_size"]
+        pizza_imagen.height = state["pizza_size"]
+
+        carrito_box.width = fw
+        carrito_box.height = state["cart_h"]
+
+        page.update()
+
+    page.on_resize = on_resize
+
+    return root

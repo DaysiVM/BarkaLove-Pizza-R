@@ -1,130 +1,216 @@
 import flet as ft
 import asyncio
-import os
-import glob
+from utils.pedidos import obtener_pedido
 
-rojo = "#E63946"
-verde = "#2A9D8F"
+# Paleta
+ROJO = "#E63946"
+VERDE = "#2A9D8F"
+CREMA = "#FFF8E7"
+NEGRO = "#1F1F1F"
+AMARILLO = "#FFD93D"
 
 
 async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_ref=None, current_order_ref=None):
-    """Animación asíncrona que muestra la preparación de la pizza.
-
-    Args:
-        page: objeto ft.Page
-        pedido: dict que contiene al menos la clave 'orden'
-        mostrar_pantalla: función para cambiar de pantalla
     """
-    txt = ft.Text("Tu pizza está siendo preparada... 🍕", size=18, color=rojo)
+    Fases:
+      1) 🥫 Preparación  -> "Modificar pedido" (amarillo, pequeño) visible
+      2) 🔥 Horno        -> no modificable
+      3) 📦 Empaque      -> no modificable
+    Final: "¡Pizza lista!" + aparece "Salir" (rojo, pequeño)
+    """
+    # ===== Setup base =====
+    page.bgcolor = CREMA
+    page.scroll = ft.ScrollMode.AUTO
+    page.clean()
 
-    # Si existe un GIF animado en assets, úsalo como animación principal
-    # Buscar cualquier archivo pizza_loading.* (gif, webp, png animado, etc.)
-    candidates = glob.glob(os.path.join("assets", "pizza_loading.*"))
-    gif_path = candidates[0] if candidates else None
-    use_gif = bool(gif_path)
+    # Traer datos completos del pedido si solo llegó la orden
+    numero_orden = pedido.get("orden")
+    pedido_full = obtener_pedido(numero_orden) if numero_orden is not None else pedido
+    if not pedido_full:
+        pedido_full = pedido or {}
 
-    pizza_frames = []
-    if not use_gif:
-        pizza_frames = [
-            ft.Image(src="assets/pizza_1.png", width=250, height=250),
-            ft.Image(src="assets/pizza_2.png", width=250, height=250),
-            ft.Image(src="assets/pizza_3.png", width=250, height=250),
-            ft.Image(src="assets/pizza_4.png", width=250, height=250),
-            ft.Image(src="assets/pizza_5.png", width=250, height=250),
-        ]
+    cliente = pedido_full.get("cliente") or pedido_full.get("nombre") or "—"
 
-    def on_modificar(_):
-        # navegar a pantalla registro en modo edición
-        if current_order_ref and current_order_ref[0]:
-            mostrar_pantalla('registro', editar_orden=current_order_ref[0])
+    # ===== Responsive helpers =====
+    def bp():
+        w = page.width or 1280
+        return "xs" if w < 900 else ("md" if w < 1280 else "lg"), w
+
+    state = {
+        "img_size": 420,
+        "title_size": 30,
+        "status_size": 24,
+        "phase_size": 18,
+        "box_w": 520,
+        "pad": 20,
+        "btn_w": 120,  # botones pequeños
+        "btn_h": 30,
+        "info_size": 16,
+    }
+
+    def recompute_sizes():
+        size, w = bp()
+        if size == "lg":
+            state.update(img_size=420, title_size=30, status_size=24, phase_size=18,
+                         box_w=520, pad=20, btn_w=120, btn_h=30, info_size=16)
+        elif size == "md":
+            state.update(img_size=340, title_size=28, status_size=22, phase_size=17,
+                         box_w=460, pad=16, btn_w=116, btn_h=28, info_size=15)
         else:
-            mostrar_pantalla('modificar')
+            state.update(img_size=260, title_size=26, status_size=20, phase_size=16,
+                         box_w=min(420, int((w or 420) * 0.92)), pad=14, btn_w=112, btn_h=26, info_size=14)
 
-    boton_modificar = ft.ElevatedButton(
-        "Modificar pedido",
-        bgcolor=rojo,
-        color="white",
-        on_click=on_modificar
+    recompute_sizes()
+
+    # ===== Imágenes / GIF (con assets_dir correcto, usar SOLO el nombre del archivo) =====
+    # Deben existir en BarkaLovePizza/assets:
+    #   - pizza_loading.gif
+    #   - pizza_lista.png
+    image_control = ft.Image(
+        src="pizza_loading.gif",
+        width=state["img_size"],
+        height=state["img_size"],
+        fit=ft.ImageFit.CONTAIN,
+        gapless_playback=True,
     )
 
-    # Tarea que oculta el botón modificar después de 30 segundos
-    async def ocultar_boton_despues(delay_seconds: int = 30):
-        try:
-            await asyncio.sleep(delay_seconds)
-            boton_modificar.visible = False
-            # Si la imagen ya fue reemplazada, solo actualizar la página
-            page.update()
-        except asyncio.CancelledError:
-            # si se cancela, no pasa nada
-            pass
+    # ===== Textos y fases =====
+    titulo = ft.Text("🍕 BarkaLove Pizza", size=state["title_size"], color=ROJO, weight=ft.FontWeight.BOLD)
+    txt_estado = ft.Text("Preparando tu pizza...", size=state["status_size"], color=ROJO, weight=ft.FontWeight.BOLD)
 
+    phases = [("Preparación", "🥫"), ("Horno", "🔥"), ("Empaque", "📦")]
+    fase_actual = ft.Text(
+        f"{phases[0][1]}  Fase: {phases[0][0]}",
+        size=state["phase_size"],
+        color=NEGRO,
+        weight=ft.FontWeight.W_600,
+        text_align=ft.TextAlign.CENTER,
+    )
 
-    # Control de imagen: GIF o primer frame
-    image_control = ft.Image(src=gif_path, width=250, height=250) if use_gif else pizza_frames[0]
+    progreso_bar = ft.ProgressBar(value=0, color=AMARILLO, bgcolor="#E0E0E0", width=state["box_w"])
 
-    contenedor = ft.Column([
-        txt,
-        image_control,
-        ft.Text(f"Número de orden: {pedido.get('orden', '')}", size=16, color="black"),
-        boton_modificar
-    ], alignment="center")
+    # ===== Botones (pequeños) =====
+    def on_modificar(_):
+        if current_order_ref and current_order_ref[0]:
+            mostrar_pantalla("registro", editar_orden=current_order_ref[0])
+        else:
+            mostrar_pantalla("registro")
 
-    page.clean()
-    page.add(contenedor)
+    btn_modificar = ft.ElevatedButton(
+        "Modificar",
+        bgcolor=AMARILLO,
+        color=NEGRO,
+        width=state["btn_w"],
+        height=state["btn_h"],
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+        on_click=on_modificar,
+        visible=True,   # solo fase 1
+    )
+
+    def on_salir(_):
+        mostrar_pantalla("inicio")
+
+    btn_salir = ft.ElevatedButton(
+        "Salir",
+        bgcolor=ROJO,
+        color="white",
+        width=state["btn_w"],
+        height=state["btn_h"],
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+        on_click=on_salir,
+        visible=False,  # solo al finalizar
+    )
+
+    info_min = ft.Text(
+        f"Cliente: {cliente}   •   Orden: #{numero_orden if numero_orden is not None else '—'}",
+        size=state["info_size"],
+        color=NEGRO,
+        text_align=ft.TextAlign.CENTER,
+    )
+
+    # ===== Layout =====
+    layout = ft.Column(
+        [
+            titulo,
+            txt_estado,
+            image_control,
+            fase_actual,
+            progreso_bar,
+            ft.Row([btn_salir], alignment=ft.MainAxisAlignment.CENTER),      # aparece al final
+            ft.Container(height=6),
+            ft.Row([btn_modificar], alignment=ft.MainAxisAlignment.CENTER),  # solo en Fase 1
+            ft.Container(height=6),
+            info_min,
+        ],
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=10,
+    )
+
+    root = ft.Container(
+        content=layout,
+        alignment=ft.alignment.center,
+        expand=True,
+        padding=state["pad"],
+        bgcolor=CREMA,
+    )
+
+    page.add(root)
     page.update()
 
-    # programar la ocultación del botón en background
-    asyncio.create_task(ocultar_boton_despues(30))
-
-    # Duración total de preparación (en segundos)
+    # ===== Fases =====
     TOTAL_PREP_SECONDS = 60
+    phase_duration = TOTAL_PREP_SECONDS / 3
 
-    if use_gif:
-        # Si usamos GIF, lo mostramos durante TOTAL_PREP_SECONDS
-        page.update()
-        await asyncio.sleep(TOTAL_PREP_SECONDS)
-        # Mostrar imagen final grande
-        contenedor.controls[1] = ft.Image(src=os.path.join("assets", "pizza_lista.png"), width=320, height=320)
-        txt.value = "¡Pizza lista! 🍕"
-        page.update()
-        # marcar finalizado
-        if pedido_finalizado_ref is not None:
-            pedido_finalizado_ref[0] = True
-        if current_order_ref is not None:
-            current_order_ref[0] = pedido.get('orden')
-    else:
-        # distribuir TOTAL_PREP_SECONDS en los frames
-        per_frame = TOTAL_PREP_SECONDS / max(1, len(pizza_frames))
-        for frame in pizza_frames:
-            contenedor.controls[1] = frame
+    async def run_fases():
+        for i, (name, emoji) in enumerate(phases):
+            fase_actual.value = f"{emoji}  Fase: {name}"
+            progreso_bar.value = (i + 1) / len(phases)
+            btn_modificar.visible = (i == 0)  # solo en Preparación
             page.update()
-            await asyncio.sleep(per_frame)
+            await asyncio.sleep(phase_duration)
 
-        # Mostrar imagen final grande
-        contenedor.controls[1] = ft.Image(src=os.path.join("assets", "pizza_lista.png"), width=320, height=320)
-        txt.value = "¡Pizza lista! 🍕"
+        # Final
+        fase_actual.value = "✅  Fase: Finalizada"
+        progreso_bar.value = 1
+        image_control.src = "pizza_lista.png"  # imagen final exacta
+        txt_estado.value = "¡Pizza lista! 🍕"
+        txt_estado.color = VERDE
+        btn_modificar.visible = False
+        btn_salir.visible = True        # ahora sí mostramos "Salir"
         page.update()
-        # marcar finalizado
+
         if pedido_finalizado_ref is not None:
             pedido_finalizado_ref[0] = True
         if current_order_ref is not None:
-            current_order_ref[0] = pedido.get('orden')
+            current_order_ref[0] = numero_orden
+
+    await run_fases()
+
+    # ===== on_resize =====
+    def on_resize(e):
+        recompute_sizes()
+        image_control.width = state["img_size"]
+        image_control.height = state["img_size"]
+        titulo.size = state["title_size"]
+        txt_estado.size = state["status_size"]
+        fase_actual.size = state["phase_size"]
+        progreso_bar.width = state["box_w"]
+        btn_salir.width = state["btn_w"]; btn_salir.height = state["btn_h"]
+        btn_modificar.width = state["btn_w"]; btn_modificar.height = state["btn_h"]
+        info_min.size = state["info_size"]
+        root.padding = state["pad"]
+        page.update()
+
+    page.on_resize = on_resize
 
 
 def mostrar_carga_pizza(page, numero_orden, mostrar_pantalla, pedido_finalizado_ref=None, current_order_ref=None):
-    """Wrapper sincrónico/compatibilidad para código que importa
-    `mostrar_carga_pizza(page, numero_orden, mostrar_pantalla)`.
-
-    Si el event loop ya está corriendo, programa la tarea asíncrona, si no,
-    ejecuta la coroutine directamente.
-    """
+    """Compat sincrónica: ejecuta o agenda la coroutine según haya loop."""
     pedido = {"orden": numero_orden}
     try:
-        # Si hay un loop en ejecución, usamos create_task
-        loop = asyncio.get_running_loop()
+        asyncio.get_running_loop()
     except RuntimeError:
-        # No hay loop; ejecutamos de forma bloqueante
         asyncio.run(pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_ref, current_order_ref))
     else:
-        # Programamos la coroutine para que corra en el loop existente
         asyncio.create_task(pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_ref, current_order_ref))
