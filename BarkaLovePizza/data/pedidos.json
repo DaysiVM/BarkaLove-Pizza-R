@@ -135,5 +135,15 @@
             "Pimientos"
         ],
         "hora": "2025-10-21T12:34:21.250613"
+    },
+    {
+        "orden": 8590,
+        "masa": "Delgada",
+        "salsa": "Blanca",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni"
+        ],
+        "hora": "2025-10-21T15:42:01.970054"
     }
 ]

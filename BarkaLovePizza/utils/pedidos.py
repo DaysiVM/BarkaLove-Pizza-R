@@ -7,8 +7,9 @@ def guardar_pedido(pedido):
     os.makedirs("data", exist_ok=True)
     pedidos = cargar_pedidos()
     pedidos.append(pedido)
-    with open(ARCHIVO, "w") as f:
-        json.dump(pedidos, f, indent=4)
+    # Escritura robusta y UTF-8
+    with open(ARCHIVO, "w", encoding="utf-8") as f:
+        json.dump(pedidos, f, indent=4, ensure_ascii=False)
 
 
 def actualizar_pedido(pedido):
@@ -39,8 +40,16 @@ def obtener_pedido(orden):
 
 def cargar_pedidos():
     if os.path.exists(ARCHIVO):
-        with open(ARCHIVO, "r") as f:
-            return json.load(f)
+        with open(ARCHIVO, "r", encoding="utf-8") as f:
+            txt = f.read().strip()
+            if not txt:
+                # archivo existente pero vacío
+                return []
+            try:
+                return json.loads(txt)
+            except json.JSONDecodeError:
+                # tolera JSON corrupto devolviendo lista vacía
+                return []
     return []
 
 def pedidos_modificables(minutos=5):

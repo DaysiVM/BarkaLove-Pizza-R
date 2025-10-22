@@ -1,0 +1,49 @@
+[
+    {
+        "orden": 3632,
+        "cliente": "Nelson",
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni"
+        ],
+        "cantidad": 1,
+        "metodo_pago": "Efectivo",
+        "hora": "2025-10-22T09:05:02.914184"
+    },
+    {
+        "orden": 7892,
+        "cliente": "Tsuki",
+        "metodo_pago": "Efectivo",
+        "items": [
+            {
+                "masa": "Delgada",
+                "salsa": "Tomate",
+                "ingredientes": [
+                    "Queso extra",
+                    "Pepperoni"
+                ],
+                "cantidad": 1
+            },
+            {
+                "masa": "Delgada",
+                "salsa": "Tomate",
+                "ingredientes": [
+                    "Jamón"
+                ],
+                "cantidad": 3
+            }
+        ],
+        "hora": "2025-10-22T10:48:40.048222",
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni"
+        ],
+        "cantidad": 1,
+        "total_visual": 40,
+        "moneda_visual": "USD"
+    }
+]
