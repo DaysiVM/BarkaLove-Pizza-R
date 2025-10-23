@@ -40,34 +40,39 @@ def main(page: ft.Page):
     # Función para mostrar pantallas
     def mostrar_pantalla(nombre, **kwargs):
         page.clean()
+
         if nombre == "inicio":
             page.add(pantalla_inicio(pedido_enviado_ref[0], pedido_finalizado_ref[0], mostrar_pantalla))
+
         elif nombre == "registro":
-            # permitir pasar editar_orden via kwargs
-            editar_orden = kwargs.get('editar_orden')
-            page.add(pantalla_registro(
-                page, masa, salsa, checkbox_ingredientes, ingredientes_data,
-                mostrar_pantalla, pedido_enviado_ref, pedido_finalizado_ref, current_order_ref, editar_orden=editar_orden
-            ))
+            editar_orden = kwargs.get("editar_orden")
+            page.add(
+                pantalla_registro(
+                    page, masa, salsa, checkbox_ingredientes, ingredientes_data,
+                    mostrar_pantalla, pedido_enviado_ref, pedido_finalizado_ref, current_order_ref,
+                    editar_orden=editar_orden
+                )
+            )
+
         elif nombre == "preparar":
-            # Mostrar la pantalla de preparación usando el wrapper que maneja el loop
-            numero_orden = kwargs.get('numero_orden')
+            numero_orden = kwargs.get("numero_orden")
             if numero_orden is not None:
                 from screens.preparar import mostrar_carga_pizza
-                # llamar al wrapper y pasar los refs para que se actualicen cuando termine
                 mostrar_carga_pizza(page, numero_orden, mostrar_pantalla, pedido_finalizado_ref, current_order_ref)
+
         elif nombre == "modificar":
             from screens.modificar import pantalla_modificar
-            page.add(pantalla_modificar(
-                page, masa, salsa, checkbox_ingredientes, mostrar_pantalla,
-                id_orden=kwargs.get("id_orden")
-            ))
+            page.add(
+                pantalla_modificar(
+                    page, masa, salsa, checkbox_ingredientes, mostrar_pantalla,
+                    id_orden=kwargs.get("id_orden")
+                )
+            )
 
         elif nombre == "ver_orden":
             from screens.ver_orden import pantalla_ver_orden
-            page.add(pantalla_ver_orden(
-                page, kwargs.get("numero_orden"), mostrar_pantalla
-            ))
+            page.add(pantalla_ver_orden(page, kwargs.get("numero_orden"), mostrar_pantalla))
+
         elif nombre == "admin_login":
             from screens.admin_login import pantalla_admin_login
             page.add(pantalla_admin_login(page, mostrar_pantalla))
@@ -76,10 +81,15 @@ def main(page: ft.Page):
             from screens.admin import pantalla_admin
             page.add(pantalla_admin(page, mostrar_pantalla))
 
-        # (para más adelante cuando creemos estas pantallas)
         elif nombre == "admin_recetas":
             from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_recetas(page, mostrar_pantalla))
+
+        # === NUEVA RUTA: KDS (Cocina) ===
+        elif nombre == "kds":
+            from screens.kds import pantalla_kds
+            page.add(pantalla_kds(page, mostrar_pantalla))
+
         page.update()
 
     mostrar_pantalla("inicio")
