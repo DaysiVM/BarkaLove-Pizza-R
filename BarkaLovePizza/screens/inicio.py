@@ -8,13 +8,16 @@ def pantalla_inicio(pedido_enviado, pedido_finalizado, mostrar_pantalla):
     negro = "#1F1F1F"
 
     # --- Topbar con botón Administración (sin función aún) ---
-    btn_admin = ft.ElevatedButton(
-        "Administración",
-        bgcolor=rojo,
-        color="white",
-        height=36,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-        on_click=lambda _: None,  # sin acción (se implementará más adelante)
+    btn_admin = ft.TextButton(
+    "Administración",
+    style=ft.ButtonStyle(
+        color={"": "white"},
+        bgcolor={"": "transparent"},
+        overlay_color={"": "transparent"},
+        padding=ft.padding.all(0),
+        text_style=ft.TextStyle(size=14, weight=ft.FontWeight.W_500),
+    ),
+    on_click=lambda _: mostrar_pantalla("admin_login"),  # ⬅ ir al login
     )
     topbar = ft.Container(
         content=ft.Row(

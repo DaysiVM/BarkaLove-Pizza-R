@@ -68,6 +68,18 @@ def main(page: ft.Page):
             page.add(pantalla_ver_orden(
                 page, kwargs.get("numero_orden"), mostrar_pantalla
             ))
+        elif nombre == "admin_login":
+            from screens.admin_login import pantalla_admin_login
+            page.add(pantalla_admin_login(page, mostrar_pantalla))
+
+        elif nombre == "admin":
+            from screens.admin import pantalla_admin
+            page.add(pantalla_admin(page, mostrar_pantalla))
+
+        # (para más adelante cuando creemos estas pantallas)
+        elif nombre == "admin_recetas":
+            from screens.admin_recetas import pantalla_admin_recetas
+            page.add(pantalla_admin_recetas(page, mostrar_pantalla))
         page.update()
 
     mostrar_pantalla("inicio")

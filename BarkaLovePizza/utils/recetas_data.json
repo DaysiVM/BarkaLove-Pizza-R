@@ -1,0 +1,138 @@
+{
+  "Pepperoni": [
+    {
+      "tipo_pizza": "Pepperoni",
+      "version_id": "v1.0.0",
+      "autor": "admin",
+      "fecha": "2025-10-23 08:38:11",
+      "notas": "Versión inicial",
+      "ingredientes": {
+        "queso": {
+          "gramos": 120,
+          "tol": 5
+        },
+        "salsa": {
+          "gramos": 80,
+          "tol": 5
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 12,
+        "tol": {
+          "temp": 5,
+          "tiempo": 1
+        }
+      },
+      "activo": true
+    },
+    {
+      "tipo_pizza": "Pepperoni",
+      "version_id": "v1.0",
+      "autor": "Nelson",
+      "fecha": "2025-10-23 08:38:13",
+      "notas": "Pizza de pepperoni",
+      "ingredientes": {
+        "queso": {
+          "gramos": 120,
+          "tol": 5
+        },
+        "salsa": {
+          "gramos": 80,
+          "tol": 5
+        },
+        "pepperoni": {
+          "gramos": 60,
+          "tol": 5
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 5,
+        "tol": {
+          "temp": 5,
+          "tiempo": 1
+        }
+      },
+      "activo": false
+    },
+    {
+      "tipo_pizza": "Pepperoni",
+      "version_id": "v1.0",
+      "autor": "Nelson",
+      "fecha": "2025-10-23 08:38:19",
+      "notas": "Pizza de pepperoni",
+      "ingredientes": {
+        "queso": {
+          "gramos": 120,
+          "tol": 5
+        },
+        "salsa": {
+          "gramos": 80,
+          "tol": 5
+        },
+        "pepperoni": {
+          "gramos": 60,
+          "tol": 5
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 5,
+        "tol": {
+          "temp": 5,
+          "tiempo": 1
+        }
+      },
+      "activo": false
+    }
+  ],
+  "Hawaiana": [
+    {
+      "tipo_pizza": "Hawaiana",
+      "version_id": "v1.0.0",
+      "autor": "admin",
+      "fecha": "2025-10-23 08:53:08",
+      "notas": "Versión inicial",
+      "ingredientes": {
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 12,
+        "tol": {
+          "temp": 5,
+          "tiempo": 1
+        }
+      },
+      "activo": true
+    }
+  ]
+}
