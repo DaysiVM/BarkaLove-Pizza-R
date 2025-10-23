@@ -134,5 +134,61 @@
       },
       "activo": true
     }
+  ],
+  "Jamon": [
+    {
+      "tipo_pizza": "Jamon",
+      "version_id": "v1.0.0",
+      "autor": "admin",
+      "fecha": "2025-10-23 10:51:21",
+      "notas": "Versión inicial",
+      "ingredientes": {
+        "Masa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Salsa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 12,
+        "tol": {
+          "temp": 5,
+          "tiempo": 1
+        }
+      },
+      "activo": true
+    }
   ]
 }

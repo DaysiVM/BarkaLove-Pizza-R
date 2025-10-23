@@ -1,10 +1,10 @@
-# screens/registro.py (versión compacta y responsive)
+# screens/registro.py (registro + receta vigente con guía a la izquierda e imagen por tipo)
 import flet as ft
 import random
 from datetime import datetime
 import time
 from utils.pedidos import guardar_pedido, actualizar_pedido, obtener_pedido
-
+import utils.recetas as rx  # usa la receta vigente
 
 def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                       mostrar_pantalla, pedido_enviado_ref, pedido_finalizado_ref,
@@ -12,12 +12,8 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
 
     # ====== Estilo base y helpers ======
     page.session.set("inicio_registro_ts", time.monotonic())
-    page.scroll = ft.ScrollMode.AUTO  # permite hacer scroll en pantallas bajas
-    rojo = "#E63946"
-    amarillo = "#FFD93D"
-    negro = "#1F1F1F"
-    crema = "#FFF8E7"
-    azul = "#2196F3"
+    page.scroll = ft.ScrollMode.AUTO
+    rojo = "#E63946"; amarillo = "#FFD93D"; negro = "#1F1F1F"; crema = "#FFF8E7"; azul = "#2196F3"; blanco = "#FFFFFF"
 
     # Breakpoints por ancho y ajustes por altura
     def bp():
@@ -26,185 +22,111 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
         size = "xs" if w < 900 else ("md" if w < 1280 else "lg")
         return size, w, h
 
-    state = {
-        "field_w": 320,
-        "pizza_size": 560,
-        "cart_h": 420,
-        "title_size": 32,
-        "text_size": 16,
-        "label_size": 18,
-        "ing_img": 32,
-        "pad": 16,
-    }
-
+    state = {"field_w": 320, "pizza_size": 560, "cart_h": 420, "title_size": 32, "ing_img": 32, "pad": 16}
     def recompute_sizes():
         size, w, h = bp()
         if size == "lg":
-            state["field_w"] = 320
-            state["pizza_size"] = 560
-            state["cart_h"] = 420
+            state.update(field_w=320, pizza_size=560, cart_h=420)
         elif size == "md":
-            state["field_w"] = 300
-            state["pizza_size"] = 420
-            state["cart_h"] = 360
-        else:  # xs
-            state["field_w"] = min(280, int(w * 0.9))
-            state["pizza_size"] = 320
-            state["cart_h"] = 300
-
-        # Si la altura es muy baja, compacta más
+            state.update(field_w=300, pizza_size=420, cart_h=360)
+        else:
+            state.update(field_w=min(280, int(w * 0.9)), pizza_size=320, cart_h=300)
         if h < 740:
             state["pizza_size"] = max(280, int(state["pizza_size"] * 0.9))
             state["cart_h"] = max(260, int(state["cart_h"] * 0.9))
-
+        # anchos internos para guía vs ingredientes dentro de la columna izquierda
+        state["half_w"] = max(220, int((state["field_w"] * 2 + 32) / 2))  # para ResponsiveRow interno
     recompute_sizes()
 
     # ====== Campos de cliente ======
-    nombre_cliente = ft.TextField(label="Nombre del cliente", width=state["field_w"], color=negro, text_size=16)
+    nombre_cliente = ft.TextField(label="Nombre del cliente", hint_text="Ej. Juan Pérez",
+                                  width=state["field_w"], color=negro, text_size=16)
 
-    # Forzar color / tamaño / ancho en selectores de masa y salsa (inyectados por router)
-    masa.color = negro
-    salsa.color = negro
-    masa.text_size = 16
-    salsa.text_size = 16
-    masa.width = state["field_w"]
-    salsa.width = state["field_w"]
+    # Selectores (inyectados por router)
+    masa.color = negro; masa.text_size = 16; masa.width = state["field_w"]
+    salsa.color = negro; salsa.text_size = 16; salsa.width = state["field_w"]
 
-    # ====== TAMAÑO (debajo de salsa, SOLO opciones) ======
+    # ====== TAMAÑO ======
     tamano = ft.Dropdown(
-        label="Tamaño",
-        width=state["field_w"],
-        color=negro,
-        text_size=16,
+        label="Tamaño", width=state["field_w"], color=negro, text_size=16,
         options=[ft.dropdown.Option("Individual"), ft.dropdown.Option("Familiar")],
     )
 
-    # ====== INGREDIENTES: agregar Jamón y Piña y uniformar estilo ======
+    # ====== INGREDIENTES extra (Jamón, Piña) + estilo ======
     chk_jamon = ft.Checkbox(label="Jamón", value=False)
-    chk_pina = ft.Checkbox(label="Piña", value=False)
-    for c in [chk_jamon, chk_pina]:
+    chk_pina  = ft.Checkbox(label="Piña",  value=False)
+    for c in [chk_jamon, chk_pina] + list(checkbox_ingredientes):
         c.label_style = ft.TextStyle(color=negro, size=16)
-    for c in checkbox_ingredientes:
-        c.label_style = ft.TextStyle(color=negro, size=16)
-
-    ingredientes_ext = list(ingredientes) + [
-        {"img": "jamon.png", "nombre": "Jamón"},
-        {"img": "pina.png", "nombre": "Piña"},
-    ]
+    ingredientes_ext = list(ingredientes) + [{"img": "jamon.png", "nombre": "Jamón"}, {"img": "pina.png", "nombre": "Piña"}]
     checkbox_ext = list(checkbox_ingredientes) + [chk_jamon, chk_pina]
 
-    # ====== CANTIDAD (+ / -) ======
+    # ====== CANTIDAD ======
     cantidad_valor = ft.Text("1", size=18, color=negro)
-
-    def incrementar(e):
-        val = int(cantidad_valor.value)
-        if val < 10:
-            cantidad_valor.value = str(val + 1)
-            page.update()
-
-    def decrementar(e):
-        val = int(cantidad_valor.value)
-        if val > 1:
-            cantidad_valor.value = str(val - 1)
-            page.update()
-
+    def incrementar(_): 
+        v = int(cantidad_valor.value); 
+        if v < 10: cantidad_valor.value = str(v+1); page.update()
+    def decrementar(_):
+        v = int(cantidad_valor.value);
+        if v > 1: cantidad_valor.value = str(v-1); page.update()
     cantidad_row = ft.Row(
         [
             ft.Text("Cantidad:", color=negro, size=16, weight=ft.FontWeight.W_600),
             ft.IconButton(icon=ft.Icons.REMOVE, on_click=decrementar, bgcolor=amarillo, tooltip="-"),
             cantidad_valor,
             ft.IconButton(icon=ft.Icons.ADD, on_click=incrementar, bgcolor=amarillo, tooltip="+"),
-        ],
-        alignment=ft.MainAxisAlignment.START,
-        spacing=8,
+        ], alignment=ft.MainAxisAlignment.START, spacing=8
     )
 
-    # ====== PREVIEW DE PIZZA (compacta y centrada) ======
-    pizza_imagen = ft.Image(
-        src="pizza_base.png",
-        width=state["pizza_size"],
-        height=state["pizza_size"],
-        fit=ft.ImageFit.CONTAIN,
-    )
+    # ====== PREVIEW DE PIZZA ======
+    pizza_imagen = ft.Image(src="pizza_base.png", width=state["pizza_size"], height=state["pizza_size"], fit=ft.ImageFit.CONTAIN)
 
-    # Prioridad de imagen completa
-    def actualizar_imagen_pizza(e=None):
-        seleccionados = [c.label for c in checkbox_ext if c.value]
-        if "Pepperoni" in seleccionados:
-            pizza_imagen.src = "Pepperoni-pizza.png"
-        elif "Jamón" in seleccionados:
-            pizza_imagen.src = "Jamon-pizza.png"
-        elif "Pimientos" in seleccionados:
-            pizza_imagen.src = "Pimientos-pizza.png"
-        elif "Champiñones" in seleccionados:
-            pizza_imagen.src = "Champiñones-pizza.png"
-        elif "Aceitunas" in seleccionados:
-            pizza_imagen.src = "Aceitunas-pizza.png"
-        elif "Piña" in seleccionados:
-            pizza_imagen.src = "Pina-pizza.png"
-        elif "Queso extra" in seleccionados:
-            pizza_imagen.src = "cheese-pizza.png"
-        else:
-            pizza_imagen.src = "pizza_base.png"
-        page.update()
+    # Imagen por tipo de pizza (receta)
+    def imagen_por_tipo(tipo: str | None) -> str:
+        t = (tipo or "").lower()
+        if "pepperoni" in t:
+            return "Pepperoni-pizza.png"
+        # Hawaiana (jamón + piña): usamos imagen de piña que ya existe
+        if "hawa" in t or (("jam" in t or "jamón" in t) and ("piñ" in t or "pina" in t)):
+            return "Pina-pizza.png"
+        if "jam" in t or "jamón" in t:
+            return "Jamon-pizza.png"
+        if "piñ" in t or "pina" in t:
+            return "Pina-pizza.png"
+        return "pizza_base.png"
 
-    for c in checkbox_ext:
-        c.on_change = actualizar_imagen_pizza
+    # ====== Alerta ======
+    alert_text = ft.Text("", size=16, color=rojo, weight=ft.FontWeight.W_700, text_align=ft.TextAlign.CENTER)
+    def show_alert(msg): alert_text.value = msg; page.update()
+    def clear_alert(*_): 
+        if alert_text.value: alert_text.value = ""; page.update()
+    for ctrl in [masa, salsa, tamano]: ctrl.on_change = clear_alert
 
-    # ====== Alerta inline (roja) sobre la pizza ======
-    alert_text = ft.Text(
-        "",
-        size=16,
-        color=rojo,
-        weight=ft.FontWeight.W_700,
-        text_align=ft.TextAlign.CENTER,
-    )
-
-    def show_alert(msg: str):
-        alert_text.value = msg
-        page.update()
-
-    def clear_alert(*_):
-        if alert_text.value:
-            alert_text.value = ""
-            page.update()
-
-    for ctrl in [masa, salsa, tamano]:
-        ctrl.on_change = clear_alert
-
-    # ====== Carrito a la derecha ======
-    carrito_items = []  # {"masa","salsa","tamano","ingredientes","cantidad"}
+    # ====== Carrito ======
+    carrito_items = []
     carrito_list = ft.ListView(expand=True, spacing=6, padding=0, auto_scroll=False)
     carrito_header = ft.Text("Productos agregados", size=18, weight=ft.FontWeight.BOLD, color=negro)
-    carrito_total = ft.Text("Total de productos: 0", size=14, color=negro)
+    carrito_total  = ft.Text("Total de productos: 0", size=14, color=negro)
     carrito_precio = ft.Text("Total a pagar: $0", size=16, weight=ft.FontWeight.W_600, color=negro)
-
-    # Método de pago (derecha)
     metodo_pago = ft.Dropdown(
-        label="Método de pago",
-        width=state["field_w"],
-        color=negro,
-        text_size=16,
+        label="Método de pago", width=state["field_w"], color=negro, text_size=16,
         options=[ft.dropdown.Option("Efectivo"), ft.dropdown.Option("Tarjeta"), ft.dropdown.Option("Transferencia")],
         on_change=clear_alert,
     )
-
-    def _total_unidades():
-        return sum(int(it.get("cantidad", 1)) for it in carrito_items)
-
+    def _total_unidades(): return sum(int(it.get("cantidad", 1)) for it in carrito_items)
     def eliminar_item(idx):
-        def _handler(e):
+        def _h(_):
             if 0 <= idx < len(carrito_items):
-                carrito_items.pop(idx)
-                refresh_carrito()
-        return _handler
-
+                carrito_items.pop(idx); refresh_carrito()
+        return _h
     def refresh_carrito():
         carrito_list.controls.clear()
         for idx, it in enumerate(carrito_items, start=0):
             t = it.get("tamano") or "Tamaño N/D"
-            resumen = f'{it["cantidad"]}× {t} — {it["masa"]} + {it["salsa"]} | ' \
-                      f'{", ".join(it["ingredientes"]) if it["ingredientes"] else "Sin extras"}'
+            tipo = it.get("receta_tipo") or "N/D"
+            resumen = (
+                f'{it["cantidad"]}× {t} — {it["masa"]} + {it["salsa"]} | '
+                f'{", ".join(it["ingredientes"]) if it["ingredientes"] else "Sin extras"}'
+            )
             carrito_list.controls.append(
                 ft.Container(
                     bgcolor="#FFFFFF",
@@ -214,7 +136,13 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
                         [
                             ft.Column(
                                 [
-                                    ft.Text(f"Producto {idx+1}", size=16, weight=ft.FontWeight.W_600, color=negro),
+                                    # ⬇️ Aquí añadimos el tipo al título
+                                    ft.Text(
+                                        f"Producto {idx+1} — {tipo}",
+                                        size=16,
+                                        weight=ft.FontWeight.W_600,
+                                        color=negro,
+                                    ),
                                     ft.Text(resumen, size=14, color=negro),
                                 ],
                                 spacing=2,
@@ -238,12 +166,79 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
         carrito_precio.value = f"Total a pagar: ${_total_unidades() * 10}"
         page.update()
 
-    # ====== Agregar producto (columna central) ======
-    def agregar_producto_click(e):
+    # ====== Tipo de pizza (receta) + Guía vigente ======
+    tipos_receta = rx.listar_tipos()
+    dd_receta = ft.Dropdown(
+        label="Tipo de pizza (receta)",
+        width=state["field_w"],
+        color=negro, text_size=16,
+        options=[ft.dropdown.Option(t) for t in tipos_receta],
+        value=(tipos_receta[0] if tipos_receta else None),
+    )
+
+    guia_titulo = ft.Text("Guía receta vigente", size=16, color=negro, weight=ft.FontWeight.W_600)
+    guia_list = ft.Column([], spacing=4)
+    guia_receta_container = ft.Container(bgcolor=blanco, border_radius=10, padding=10)
+
+    def pm_str(n, tol, unidad="g"):
+        return f"{n} ± {tol} {unidad}"
+
+    def refresh_guia_receta(*_):
+        guia_list.controls.clear()
+        tipo = dd_receta.value
+        ver = rx.vigente(tipo) if tipo else None
+        if not ver:
+            guia_list.controls.append(ft.Text("No hay receta vigente para este tipo.", size=14, color=negro))
+        else:
+            ing = ver.ingredientes or {}
+            if "Masa" in ing:
+                guia_list.controls.append(ft.Text(f"• Masa:  {pm_str(ing['Masa']['gramos'], ing['Masa']['tol'])}", size=14, color=negro))
+            if "Salsa" in ing:
+                guia_list.controls.append(ft.Text(f"• Salsa: {pm_str(ing['Salsa']['gramos'], ing['Salsa']['tol'])}", size=14, color=negro))
+
+            # Mostrar SOLO ingredientes seleccionados (limpio y útil)
+            seleccionados = [c.label for c in checkbox_ext if c.value]
+            for sel in seleccionados:
+                if sel in ing:
+                    d = ing[sel]
+                    guia_list.controls.append(ft.Text(f"• {sel}: {pm_str(d['gramos'], d['tol'])}", size=14, color=negro))
+
+            # Horno objetivo
+            h = ver.horno or {}
+            guia_list.controls.append(ft.Divider())
+            guia_list.controls.append(
+                ft.Text(
+                    f"Horno: {pm_str(h.get('temp_c',0), (h.get('tol') or {}).get('temp',0), '°C')}  •  "
+                    f"{pm_str(h.get('tiempo_min',0), (h.get('tol') or {}).get('tiempo',0), 'min')}",
+                    size=14, color=negro
+                )
+            )
+        guia_receta_container.content = ft.Column([guia_titulo, guia_list], spacing=6)
+        page.update()
+
+    # ingredientes cambian solo la guía (no la imagen)
+    def on_ingredientes_change(_=None):
+        refresh_guia_receta()
+    for c in checkbox_ext:
+        c.on_change = on_ingredientes_change
+
+    # al cambiar el tipo, actualizar imagen y guía
+    def on_tipo_change(_=None):
+        pizza_imagen.src = imagen_por_tipo(dd_receta.value)
+        refresh_guia_receta()
+        page.update()
+    dd_receta.on_change = on_tipo_change
+
+    # primera carga de guía + imagen por tipo
+    on_tipo_change()
+
+    # ====== Agregar producto ======
+    def agregar_producto_click(_):
         faltantes = []
         if not masa.value: faltantes.append("tipo de masa")
         if not salsa.value: faltantes.append("salsa")
         if not tamano.value: faltantes.append("tamaño")
+        if not dd_receta.value: faltantes.append("tipo de pizza (receta)")
         if faltantes:
             show_alert(f"Para agregar un producto falta: {', '.join(faltantes)}.")
             return
@@ -255,154 +250,112 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
             "tamano": tamano.value,
             "ingredientes": ingredientes_sel,
             "cantidad": int(cantidad_valor.value),
+            "receta_tipo": dd_receta.value,
         })
         refresh_carrito()
         clear_alert()
         page.snack_bar = ft.SnackBar(ft.Text("Producto agregado al carrito.", color="white"), bgcolor="#4CAF50")
-        page.snack_bar.open = True
-        page.update()
+        page.snack_bar.open = True; page.update()
 
     btn_agregar_producto = ft.ElevatedButton(
-        "Agregar producto",
-        bgcolor=azul,
-        color="white",
-        width=220,
-        height=48,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-        on_click=agregar_producto_click,
+        "Agregar producto", bgcolor=azul, color="white", width=220, height=48,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)), on_click=agregar_producto_click,
     )
 
-    # ====== Confirmar / Cancelar pedido (en la derecha) ======
-    def cancelar_pedido_click(e):
+    # ====== Confirmar / Cancelar ======
+    def cancelar_pedido_click(_):
         if carrito_items:
-            carrito_items.clear()
-            refresh_carrito()
-            clear_alert()
+            carrito_items.clear(); refresh_carrito(); clear_alert()
             page.snack_bar = ft.SnackBar(ft.Text("Se vació el carrito de productos.", color="white"), bgcolor=rojo)
-            page.snack_bar.open = True
-            page.update()
+            page.snack_bar.open = True; page.update()
         else:
             show_alert("No hay productos en el carrito para borrar.")
 
+    def _armar_pedido_base(numero_orden=None, items=None):
+        items = items or carrito_items
+        unidades = _total_unidades()
+        first = items[0]
+        receta_tipo = first.get("receta_tipo") or dd_receta.value
+        receta_vig = rx.vigente(receta_tipo) if receta_tipo else None
+        return {
+            "orden": numero_orden,
+            "cliente": nombre_cliente.value,
+            "metodo_pago": metodo_pago.value,
+            "items": items,
+            "hora": datetime.now().isoformat() if numero_orden is None else None,
+            "masa": first["masa"],
+            "salsa": first["salsa"],
+            "tamano": first.get("tamano"),
+            "ingredientes": first["ingredientes"],
+            "cantidad": first["cantidad"],
+            "total_visual": unidades * 10,
+            "moneda_visual": "USD",
+            "receta_tipo": receta_tipo,
+            "receta_version": (receta_vig.version_id if receta_vig else None),
+        }
+
     def guardar_pedido_click(e):
-        if hasattr(e, "control"):
-            e.control.disabled = True
-            page.update()
+        if hasattr(e, "control"): e.control.disabled = True; page.update()
         try:
-            if not nombre_cliente.value:
-                show_alert("Indica el nombre del cliente.")
-                return
-            if not metodo_pago.value:
-                show_alert("Selecciona el método de pago.")
-                return
+            if not nombre_cliente.value: show_alert("Indica el nombre del cliente."); return
+            if not metodo_pago.value:    show_alert("Selecciona el método de pago."); return
 
             if len(carrito_items) == 0:
                 falt = []
-                if not masa.value: falt.append("tipo de masa")
-                if not salsa.value: falt.append("salsa")
+                if not masa.value:   falt.append("tipo de masa")
+                if not salsa.value:  falt.append("salsa")
                 if not tamano.value: falt.append("tamaño")
+                if not dd_receta.value: falt.append("tipo de pizza (receta)")
                 if falt:
                     show_alert(f"Selecciona {', '.join(falt)} o agrega un producto al carrito.")
                     return
                 ingredientes_sel = [c.label for c in checkbox_ext if c.value]
                 carrito_items.append({
-                    "masa": masa.value,
-                    "salsa": salsa.value,
-                    "tamano": tamano.value,
-                    "ingredientes": ingredientes_sel,
-                    "cantidad": int(cantidad_valor.value),
+                    "masa": masa.value, "salsa": salsa.value, "tamano": tamano.value,
+                    "ingredientes": ingredientes_sel, "cantidad": int(cantidad_valor.value),
+                    "receta_tipo": dd_receta.value,
                 })
                 refresh_carrito()
 
             if editar_orden is None:
                 numero_orden = random.randint(1000, 9999)
-                unidades = _total_unidades()
-                first = carrito_items[0]
-                pedido = {
-                    "orden": numero_orden,
-                    "cliente": nombre_cliente.value,
-                    "metodo_pago": metodo_pago.value,
-                    "items": carrito_items,
-                    "hora": datetime.now().isoformat(),
-                    "masa": first["masa"],
-                    "salsa": first["salsa"],
-                    "tamano": first.get("tamano"),
-                    "ingredientes": first["ingredientes"],
-                    "cantidad": first["cantidad"],
-                    "total_visual": unidades * 10,
-                    "moneda_visual": "USD",
-                }
+                pedido = _armar_pedido_base(numero_orden=numero_orden)
                 guardar_pedido(pedido)
-                pedido_enviado_ref[0] = True
-                pedido_finalizado_ref[0] = False
-                current_order_ref[0] = numero_orden
+                pedido_enviado_ref[0] = True; pedido_finalizado_ref[0] = False; current_order_ref[0] = numero_orden
                 clear_alert()
                 page.snack_bar = ft.SnackBar(
                     ft.Text(f"Pedido #{numero_orden} registrado con {len(carrito_items)} producto(s).", color="white"),
                     bgcolor="#4CAF50",
                 )
-                page.snack_bar.open = True
-                page.update()
+                page.snack_bar.open = True; page.update()
                 mostrar_pantalla("preparar", numero_orden=numero_orden)
             else:
                 items_final = carrito_items or [{
-                    "masa": masa.value,
-                    "salsa": salsa.value,
-                    "tamano": tamano.value,
+                    "masa": masa.value, "salsa": salsa.value, "tamano": tamano.value,
                     "ingredientes": [c.label for c in checkbox_ext if c.value],
                     "cantidad": int(cantidad_valor.value),
+                    "receta_tipo": dd_receta.value,
                 }]
-                unidades = sum(int(it.get("cantidad", 1)) for it in items_final)
-                first = items_final[0]
-                pedido = {
-                    "orden": editar_orden,
-                    "cliente": nombre_cliente.value,
-                    "metodo_pago": metodo_pago.value,
-                    "items": items_final,
-                    "masa": first["masa"],
-                    "salsa": first["salsa"],
-                    "tamano": first.get("tamano"),
-                    "ingredientes": first["ingredientes"],
-                    "cantidad": first["cantidad"],
-                    "total_visual": unidades * 10,
-                    "moneda_visual": "USD",
-                }
+                pedido = _armar_pedido_base(numero_orden=editar_orden, items=items_final)
                 actualizar_pedido(pedido)
                 clear_alert()
-                page.snack_bar = ft.SnackBar(
-                    ft.Text("Pedido actualizado correctamente.", color="white"),
-                    bgcolor="#4CAF50",
-                )
-                page.snack_bar.open = True
-                page.update()
+                page.snack_bar = ft.SnackBar(ft.Text("Pedido actualizado correctamente.", color="white"), bgcolor="#4CAF50")
+                page.snack_bar.open = True; page.update()
                 mostrar_pantalla("inicio")
 
         except Exception as ex:
             page.snack_bar = ft.SnackBar(ft.Text(f"Error al registrar pedido: {ex}", color="white"), bgcolor=rojo)
-            page.snack_bar.open = True
-            page.update()
+            page.snack_bar.open = True; page.update()
         finally:
-            if hasattr(e, "control"):
-                e.control.disabled = False
-                page.update()
+            if hasattr(e, "control"): e.control.disabled = False; page.update()
 
     btn_confirmar_derecha = ft.ElevatedButton(
-        "Confirmar pedido",
-        bgcolor=amarillo,
-        color=negro,
-        width=state["field_w"],
-        height=50,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-        on_click=guardar_pedido_click,
+        "Confirmar pedido", bgcolor=amarillo, color=negro, width=state["field_w"], height=50,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)), on_click=guardar_pedido_click,
     )
     btn_cancelar_derecha = ft.ElevatedButton(
-        "Cancelar pedido",
-        bgcolor=rojo,
-        color="white",
-        width=state["field_w"],
-        height=46,
-        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-        on_click=cancelar_pedido_click,
+        "Cancelar pedido", bgcolor=rojo, color="white", width=state["field_w"], height=46,
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)), on_click=cancelar_pedido_click,
     )
 
     # ====== Controles de ingredientes (con imágenes) ======
@@ -410,118 +363,76 @@ def pantalla_registro(page, masa, salsa, checkbox_ingredientes, ingredientes,
         ft.Row([ft.Image(src=i["img"], width=state["ing_img"], height=state["ing_img"]), checkbox_ext[idx]])
         for idx, i in enumerate(ingredientes_ext)
     ]
+    ingredientes_list_col = ft.Column(controles_ingredientes, spacing=6, scroll=ft.ScrollMode.AUTO)
+
+    # ====== Bloque "Guía a la izquierda / Ingredientes a la derecha" (responsive) ======
+    guia_cell = ft.Container(
+        guia_receta_container,
+        padding=0,
+        col={"xs": 12, "md": 6, "lg": 6},
+    )
+    ing_cell = ft.Container(
+        ft.Column([ft.Text("Ingredientes extras:", size=18, color=negro, weight=ft.FontWeight.BOLD), ingredientes_list_col], spacing=6),
+        padding=0,
+        col={"xs": 12, "md": 6, "lg": 6},
+    )
+    guia_ing_grid = ft.ResponsiveRow(controls=[guia_cell, ing_cell], columns=12, spacing=12, run_spacing=12)
 
     # ====== Formulario izquierda ======
     formulario_col = ft.Column(
         [
-            ft.Text("Registrar pedido 🍕", size=state["title_size"], color=rojo, weight=ft.FontWeight.BOLD,
-                    text_align=ft.TextAlign.LEFT),
+            ft.Text("Registrar pedido 🍕", size=state["title_size"], color=rojo, weight=ft.FontWeight.BOLD),
             ft.Divider(),
             nombre_cliente,
+            dd_receta,
             masa,
             salsa,
             tamano,
             cantidad_row,
-            ft.Text("Ingredientes:", size=18, color=negro, weight=ft.FontWeight.BOLD),
-            ft.Column(controles_ingredientes, spacing=6, scroll=ft.ScrollMode.AUTO),
+            guia_ing_grid,   # <<< guía (izq) + ingredientes (der)
         ],
-        spacing=10,
-        alignment=ft.MainAxisAlignment.START,
-        expand=False,
+        spacing=10, alignment=ft.MainAxisAlignment.START, expand=False,
     )
 
-    # ====== Columna central (alerta + pizza + agregar + volver) ======
+    # ====== Columna central ======
     btn_volver = ft.ElevatedButton(
-        "⬅ Volver",
-        bgcolor=rojo,
-        color="white",
-        width=200,
-        height=44,
+        "⬅ Volver", bgcolor=rojo, color="white", width=200, height=44,
         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=lambda _: mostrar_pantalla("inicio"),
     )
-
     col_central = ft.Column(
-        [
-            alert_text,
-            ft.Container(content=pizza_imagen, alignment=ft.alignment.center),
-            ft.Row([btn_agregar_producto, btn_volver],
-                   alignment=ft.MainAxisAlignment.CENTER, spacing=12),
-        ],
-        alignment=ft.MainAxisAlignment.CENTER,
-        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-        spacing=12,
-        expand=True,
+        [alert_text, ft.Container(content=pizza_imagen, alignment=ft.alignment.center),
+         ft.Row([btn_agregar_producto, btn_volver], alignment=ft.MainAxisAlignment.CENTER, spacing=12)],
+        alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=12, expand=True,
     )
 
-    # ====== Columna derecha (carrito + totales + pago + confirmar/cancelar) ======
-    carrito_box = ft.Container(
-        content=carrito_list,
-        bgcolor="#FFFFFF",
-        border_radius=10,
-        padding=10,
-        width=state["field_w"],
-        height=state["cart_h"],
-    )
-
+    # ====== Columna derecha ======
+    carrito_box = ft.Container(content=carrito_list, bgcolor=blanco, border_radius=10, padding=10,
+                               width=state["field_w"], height=state["cart_h"])
     carrito_col = ft.Column(
-        [
-            carrito_header,
-            carrito_box,
-            carrito_total,
-            carrito_precio,
-            ft.Divider(),
-            metodo_pago,
-            btn_confirmar_derecha,
-            btn_cancelar_derecha,
-        ],
-        spacing=10,
-        alignment=ft.MainAxisAlignment.START,
-        expand=False,
+        [carrito_header, carrito_box, carrito_total, carrito_precio, ft.Divider(), metodo_pago,
+         btn_confirmar_derecha, btn_cancelar_derecha],
+        spacing=10, alignment=ft.MainAxisAlignment.START, expand=False,
     )
 
-    # ====== Responsive layout con ResponsiveRow ======
-    form_cell = ft.Container(formulario_col, padding=0, col={"xs": 12, "md": 4, "lg": 4})
-    center_cell = ft.Container(col_central, padding=0, col={"xs": 12, "md": 5, "lg": 5})
-    cart_cell = ft.Container(carrito_col, padding=0, col={"xs": 12, "md": 3, "lg": 3})
+    # ====== Layout ======
+    form_cell   = ft.Container(formulario_col, padding=0, col={"xs": 12, "md": 4, "lg": 4})
+    center_cell = ft.Container(col_central,     padding=0, col={"xs": 12, "md": 5, "lg": 5})
+    cart_cell   = ft.Container(carrito_col,     padding=0, col={"xs": 12, "md": 3, "lg": 3})
+    grid = ft.ResponsiveRow(controls=[form_cell, center_cell, cart_cell], columns=12,
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                            vertical_alignment=ft.CrossAxisAlignment.START, run_spacing=12, spacing=12)
+    root = ft.Container(content=grid, bgcolor=crema, padding=state["pad"], expand=True, alignment=ft.alignment.top_center)
 
-    grid = ft.ResponsiveRow(
-        controls=[form_cell, center_cell, cart_cell],
-        columns=12,
-        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-        vertical_alignment=ft.CrossAxisAlignment.START,
-        run_spacing=12,
-        spacing=12,
-    )
-
-    root = ft.Container(
-        content=grid,
-        bgcolor=crema,
-        padding=state["pad"],
-        expand=True,
-        alignment=ft.alignment.top_center,
-    )
-
-    # ====== on_resize para recalcular tamaños ======
-    def on_resize(e):
+    # ====== on_resize ======
+    def on_resize(_):
         recompute_sizes()
-
-        # actualizar widths/alturas
         fw = state["field_w"]
-        nombre_cliente.width = fw
-        masa.width = fw
-        salsa.width = fw
-        tamano.width = fw
-        metodo_pago.width = fw
-
-        pizza_imagen.width = state["pizza_size"]
-        pizza_imagen.height = state["pizza_size"]
-
-        carrito_box.width = fw
-        carrito_box.height = state["cart_h"]
-
+        for ctrl in [nombre_cliente, dd_receta, masa, salsa, tamano, metodo_pago]:
+            ctrl.width = fw
+        pizza_imagen.width = state["pizza_size"]; pizza_imagen.height = state["pizza_size"]
         page.update()
-
     page.on_resize = on_resize
 
     return root
