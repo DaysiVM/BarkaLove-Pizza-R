@@ -188,6 +188,114 @@
           "tiempo": 1
         }
       },
+      "activo": false
+    },
+    {
+      "tipo_pizza": "Jamon",
+      "version_id": "v1.0.1",
+      "autor": "admin",
+      "fecha": "2025-10-23 13:17:45",
+      "notas": "Cambio de tiempo de coccion",
+      "ingredientes": {
+        "Masa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Salsa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 0,
+        "tiempo_min": 1,
+        "tol": {
+          "temp": 0,
+          "tiempo": 0
+        }
+      },
+      "activo": false
+    },
+    {
+      "tipo_pizza": "Jamon",
+      "version_id": "v1.0.2",
+      "autor": "admin",
+      "fecha": "2025-10-23 13:18:14",
+      "notas": "",
+      "ingredientes": {
+        "Masa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Salsa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 1,
+        "tol": {
+          "temp": 0,
+          "tiempo": 0
+        }
+      },
       "activo": true
     }
   ]

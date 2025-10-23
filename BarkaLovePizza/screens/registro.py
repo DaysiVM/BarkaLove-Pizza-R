@@ -1,4 +1,4 @@
-# screens/registro.py (registro + receta vigente con guía a la izquierda e imagen por tipo + KDS)
+# screens/registro.py (registro SIN guía de receta; ingredientes con icono en su lugar + imagen por tipo + KDS)
 import flet as ft
 import random
 from datetime import datetime
@@ -6,7 +6,7 @@ import time
 
 from utils.pedidos import guardar_pedido, actualizar_pedido
 from utils.kds import registrar_pedido
-import utils.recetas as rx  # receta vigente
+import utils.recetas as rx  # se usa para guardar la version vigente en el pedido (no se muestra guía)
 
 
 def pantalla_registro(
@@ -96,7 +96,7 @@ def pantalla_registro(
         ], alignment=ft.MainAxisAlignment.START, spacing=8
     )
 
-    # ====== PREVIEW DE PIZZA ======
+    # ====== PREVIEW DE PIZZA (por tipo de pizza) ======
     pizza_imagen = ft.Image(
         src="pizza_base.png",
         width=state["pizza_size"],
@@ -157,7 +157,7 @@ def pantalla_registro(
             )
             carrito_list.controls.append(
                 ft.Container(
-                    bgcolor="#FFFFFF",
+                    bgcolor=blanco,
                     padding=10,
                     border_radius=8,
                     content=ft.Row(
@@ -193,7 +193,7 @@ def pantalla_registro(
         carrito_precio.value = f"Total a pagar: ${_total_unidades() * 10}"
         page.update()
 
-    # ====== Tipo de pizza (receta) + Guía vigente ======
+    # ====== Tipo de pizza (receta) ======
     tipos_receta = rx.listar_tipos()
     dd_receta = ft.Dropdown(
         label="Tipo de pizza (receta)",
@@ -203,60 +203,12 @@ def pantalla_registro(
         value=(tipos_receta[0] if tipos_receta else None),
     )
 
-    guia_titulo = ft.Text("Guía receta vigente", size=16, color=negro, weight=ft.FontWeight.W_600)
-    guia_list = ft.Column([], spacing=4)
-    guia_receta_container = ft.Container(bgcolor=blanco, border_radius=10, padding=10)
-
-    def pm_str(n, tol, unidad="g"):
-        return f"{n} ± {tol} {unidad}"
-
-    def refresh_guia_receta(*_):
-        guia_list.controls.clear()
-        tipo = dd_receta.value
-        ver = rx.vigente(tipo) if tipo else None
-        if not ver:
-            guia_list.controls.append(ft.Text("No hay receta vigente para este tipo.", size=14, color=negro))
-        else:
-            ing = ver.ingredientes or {}
-            if "Masa" in ing:
-                guia_list.controls.append(ft.Text(f"• Masa:  {pm_str(ing['Masa']['gramos'], ing['Masa']['tol'])}", size=14, color=negro))
-            if "Salsa" in ing:
-                guia_list.controls.append(ft.Text(f"• Salsa: {pm_str(ing['Salsa']['gramos'], ing['Salsa']['tol'])}", size=14, color=negro))
-
-            # Mostrar SOLO ingredientes seleccionados (útil para cocina)
-            seleccionados = [c.label for c in checkbox_ext if c.value]
-            for sel in seleccionados:
-                if sel in ing:
-                    d = ing[sel]
-                    guia_list.controls.append(ft.Text(f"• {sel}: {pm_str(d['gramos'], d['tol'])}", size=14, color=negro))
-
-            # Horno objetivo
-            h = ver.horno or {}
-            guia_list.controls.append(ft.Divider())
-            guia_list.controls.append(
-                ft.Text(
-                    f"Horno: {pm_str(h.get('temp_c',0), (h.get('tol') or {}).get('temp',0), '°C')}  •  "
-                    f"{pm_str(h.get('tiempo_min',0), (h.get('tol') or {}).get('tiempo',0), 'min')}",
-                    size=14, color=negro
-                )
-            )
-        guia_receta_container.content = ft.Column([guia_titulo, guia_list], spacing=6)
-        page.update()
-
-    # ingredientes cambian solo la guía (no la imagen)
-    def on_ingredientes_change(_=None):
-        refresh_guia_receta()
-    for c in checkbox_ext:
-        c.on_change = on_ingredientes_change
-
-    # al cambiar el tipo, actualizar imagen y guía
+    # actualizar imagen por tipo
     def on_tipo_change(_=None):
         pizza_imagen.src = imagen_por_tipo(dd_receta.value)
-        refresh_guia_receta()
         page.update()
     if dd_receta.options:
         dd_receta.on_change = on_tipo_change
-    # primera carga de guía + imagen por tipo
     on_tipo_change()
 
     # ====== Agregar producto ======
@@ -339,7 +291,6 @@ def pantalla_registro(
         try:
             registrar_pedido(pedido_kds)
         except Exception:
-            # Si algo falla, no bloqueamos el flujo de caja
             pass
 
     def guardar_pedido_click(e):
@@ -421,15 +372,7 @@ def pantalla_registro(
     ]
     ingredientes_list_col = ft.Column(controles_ingredientes, spacing=6, scroll=ft.ScrollMode.AUTO)
 
-    # ====== Bloque "Guía (izq) / Ingredientes (der)" ======
-    guia_cell = ft.Container(guia_receta_container, padding=0, col={"xs": 12, "md": 6, "lg": 6})
-    ing_cell = ft.Container(
-        ft.Column([ft.Text("Ingredientes extras:", size=18, color=negro, weight=ft.FontWeight.BOLD), ingredientes_list_col], spacing=6),
-        padding=0, col={"xs": 12, "md": 6, "lg": 6},
-    )
-    guia_ing_grid = ft.ResponsiveRow(controls=[guia_cell, ing_cell], columns=12, spacing=12, run_spacing=12)
-
-    # ====== Formulario izquierda ======
+    # ====== Formulario izquierda (AHORA SIN GUÍA; ingredientes aquí) ======
     formulario_col = ft.Column(
         [
             ft.Text("Registrar pedido 🍕", size=state["title_size"], color=rojo, weight=ft.FontWeight.BOLD),
@@ -440,7 +383,8 @@ def pantalla_registro(
             salsa,
             tamano,
             cantidad_row,
-            guia_ing_grid,
+            ft.Text("Ingredientes extras:", size=18, color=negro, weight=ft.FontWeight.BOLD),
+            ingredientes_list_col,   # aquí quedaron los ingredientes con iconos
         ],
         spacing=10, alignment=ft.MainAxisAlignment.START, expand=False,
     )

@@ -1,0 +1,46 @@
+[
+  {
+    "id": 2022,
+    "orden": 2022,
+    "cliente": "asd",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra",
+      "Pepperoni",
+      "Champiñones"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-10-23 13:14:33"
+  },
+  {
+    "id": 8220,
+    "orden": 8220,
+    "cliente": "asjda",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-10-23 13:18:45"
+  },
+  {
+    "id": 5075,
+    "orden": 5075,
+    "cliente": "asda",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Jamón"
+    ],
+    "estado": "Listo",
+    "fecha": "2025-10-23 13:23:42"
+  }
+]

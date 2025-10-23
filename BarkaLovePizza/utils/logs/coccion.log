@@ -1,0 +1,28 @@
+[2025-10-23 13:14:54] COCCION INICIO | Pedido #2022 | Tipo: Jamon | Objetivo: 280.0°C, 10.8 min
+[2025-10-23 13:19:05] COCCION INICIO | Pedido #8220 | Tipo: Pepperoni | Objetivo: 280.0°C, 10.8 min
+[2025-10-23 13:24:02] COCCION INICIO | Pedido #5075 | Tipo: Jamon | Objetivo: 280.0°C, 0.9 min
+[2025-10-23 13:24:16] COCCION INICIO | Pedido #5075 | Tipo: Jamon | Objetivo: 280.0°C, 0.9 min
+[2025-10-23 13:24:30] ALERTA_SENSOR | Pedido #5075 | Falla sensor temperatura (sin lectura)
+[2025-10-23 13:24:49] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.2°C (> 280.0°C)
+[2025-10-23 13:24:52] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.2°C (> 280.0°C)
+[2025-10-23 13:24:52] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.1°C (> 280.0°C)
+[2025-10-23 13:24:58] COCCION FIN | {'pedido': 5075, 'tipo_pizza': 'Jamon', 'temp_objetivo': 280.0, 'tiempo_objetivo_min': 0.9, 'temp_final': 279.3, 'tiempo_real_min': 0.89, 'fallas': ['sensor_temp_sin_lectura']}
+[2025-10-23 13:24:58] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.2°C (> 280.0°C)
+[2025-10-23 13:24:59] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.5°C (> 280.0°C)
+[2025-10-23 13:24:59] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.2°C (> 280.0°C)
+[2025-10-23 13:25:00] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.3°C (> 280.0°C)
+[2025-10-23 13:25:01] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.2°C (> 280.0°C)
+[2025-10-23 13:25:04] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.4°C (> 280.0°C)
+[2025-10-23 13:25:04] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.4°C (> 280.0°C)
+[2025-10-23 13:25:05] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.2°C (> 280.0°C)
+[2025-10-23 13:25:06] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.4°C (> 280.0°C)
+[2025-10-23 13:25:07] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.8°C (> 280.0°C)
+[2025-10-23 13:25:07] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 281.2°C (> 280.0°C)
+[2025-10-23 13:25:08] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 281.5°C (> 280.0°C)
+[2025-10-23 13:25:08] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.9°C (> 280.0°C)
+[2025-10-23 13:25:09] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 281.4°C (> 280.0°C)
+[2025-10-23 13:25:09] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.8°C (> 280.0°C)
+[2025-10-23 13:25:10] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.3°C (> 280.0°C)
+[2025-10-23 13:25:10] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.4°C (> 280.0°C)
+[2025-10-23 13:25:11] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.7°C (> 280.0°C)
+[2025-10-23 13:25:11] COCCION FIN | {'pedido': 5075, 'tipo_pizza': 'Jamon', 'temp_objetivo': 280.0, 'tiempo_objetivo_min': 0.9, 'temp_final': 280.7, 'tiempo_real_min': 0.89, 'fallas': []}

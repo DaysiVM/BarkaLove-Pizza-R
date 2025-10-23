@@ -1,16 +1,21 @@
+# main.py
 import flet as ft
+from flet import Dropdown, Checkbox
 from screens.registro import pantalla_registro
 from screens.modificar import pantalla_modificar
-from flet import Dropdown, Checkbox
 from screens.inicio import pantalla_inicio
 
+# Si tienes otros screens, los cargamos bajo demanda en el router
+
+
 ingredientes_data = [
-    {"label": "Queso extra", "img": "queso.png"},
-    {"label": "Pepperoni", "img": "pepperoni.png"},
-    {"label": "Champiñones", "img": "champi.png"},
-    {"label": "Aceitunas", "img": "aceitunas.png"},
-    {"label": "Pimientos", "img": "pimientos.png"},
+    {"label": "Queso extra",   "img": "queso.png"},
+    {"label": "Pepperoni",     "img": "pepperoni.png"},
+    {"label": "Champiñones",   "img": "champi.png"},
+    {"label": "Aceitunas",     "img": "aceitunas.png"},
+    {"label": "Pimientos",     "img": "pimientos.png"},
 ]
+
 
 def main(page: ft.Page):
     page.title = "Barka Love Pizza 🍕"
@@ -24,7 +29,7 @@ def main(page: ft.Page):
     pedido_finalizado_ref = [False]
     current_order_ref = [None]
 
-    # Elementos compartidos
+    # Elementos compartidos (se reusan para consistencia visual)
     masa = Dropdown(
         label="Tipo de masa",
         options=[ft.dropdown.Option("Delgada"), ft.dropdown.Option("Gruesa")],
@@ -37,7 +42,7 @@ def main(page: ft.Page):
     )
     checkbox_ingredientes = [Checkbox(label=i["label"]) for i in ingredientes_data]
 
-    # Función para mostrar pantallas
+    # Router simple
     def mostrar_pantalla(nombre, **kwargs):
         page.clean()
 
@@ -57,11 +62,11 @@ def main(page: ft.Page):
         elif nombre == "preparar":
             numero_orden = kwargs.get("numero_orden")
             if numero_orden is not None:
+                # Import lazy para no bloquear
                 from screens.preparar import mostrar_carga_pizza
                 mostrar_carga_pizza(page, numero_orden, mostrar_pantalla, pedido_finalizado_ref, current_order_ref)
 
         elif nombre == "modificar":
-            from screens.modificar import pantalla_modificar
             page.add(
                 pantalla_modificar(
                     page, masa, salsa, checkbox_ingredientes, mostrar_pantalla,
@@ -85,13 +90,15 @@ def main(page: ft.Page):
             from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_recetas(page, mostrar_pantalla))
 
-        # === NUEVA RUTA: KDS (Cocina) ===
         elif nombre == "kds":
             from screens.kds import pantalla_kds
             page.add(pantalla_kds(page, mostrar_pantalla))
 
         page.update()
 
+    # Pantalla inicial
     mostrar_pantalla("inicio")
 
+
+# Ejecutar app
 ft.app(target=main, assets_dir="assets")
