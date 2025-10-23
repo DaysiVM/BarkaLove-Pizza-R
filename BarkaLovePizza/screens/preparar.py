@@ -8,22 +8,21 @@ VERDE = "#2A9D8F"
 CREMA = "#FFF8E7"
 NEGRO = "#1F1F1F"
 AMARILLO = "#FFD93D"
+AZUL = "#2196F3"
 
 
 async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_ref=None, current_order_ref=None):
     """
     Fases:
-      1) 🥫 Preparación  -> "Modificar pedido" (amarillo, pequeño) visible
-      2) 🔥 Horno        -> no modificable
-      3) 📦 Empaque      -> no modificable
-    Final: "¡Pizza lista!" + aparece "Salir" (rojo, pequeño)
+      1) 🥫 Preparación  -> "Modificar" visible
+      2) 🔥 Horno
+      3) 📦 Empaque
+    Final: "¡Pizza lista!" + aparece "Ver orden" (azul) y "Salir" (rojo)
     """
-    # ===== Setup base =====
     page.bgcolor = CREMA
     page.scroll = ft.ScrollMode.AUTO
     page.clean()
 
-    # Traer datos completos del pedido si solo llegó la orden
     numero_orden = pedido.get("orden")
     pedido_full = obtener_pedido(numero_orden) if numero_orden is not None else pedido
     if not pedido_full:
@@ -31,7 +30,6 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
 
     cliente = pedido_full.get("cliente") or pedido_full.get("nombre") or "—"
 
-    # ===== Responsive helpers =====
     def bp():
         w = page.width or 1280
         return "xs" if w < 900 else ("md" if w < 1280 else "lg"), w
@@ -43,7 +41,7 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         "phase_size": 18,
         "box_w": 520,
         "pad": 20,
-        "btn_w": 120,  # botones pequeños
+        "btn_w": 120,
         "btn_h": 30,
         "info_size": 16,
     }
@@ -62,10 +60,7 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
 
     recompute_sizes()
 
-    # ===== Imágenes / GIF (con assets_dir correcto, usar SOLO el nombre del archivo) =====
-    # Deben existir en BarkaLovePizza/assets:
-    #   - pizza_loading.gif
-    #   - pizza_lista.png
+    # ===== Imágenes =====
     image_control = ft.Image(
         src="pizza_loading.gif",
         width=state["img_size"],
@@ -74,7 +69,6 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         gapless_playback=True,
     )
 
-    # ===== Textos y fases =====
     titulo = ft.Text("🍕 BarkaLove Pizza", size=state["title_size"], color=ROJO, weight=ft.FontWeight.BOLD)
     txt_estado = ft.Text("Preparando tu pizza...", size=state["status_size"], color=ROJO, weight=ft.FontWeight.BOLD)
 
@@ -89,12 +83,12 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
 
     progreso_bar = ft.ProgressBar(value=0, color=AMARILLO, bgcolor="#E0E0E0", width=state["box_w"])
 
-    # ===== Botones (pequeños) =====
+    # ===== Botones =====
     def on_modificar(_):
         if current_order_ref and current_order_ref[0]:
-            mostrar_pantalla("registro", editar_orden=current_order_ref[0])
-        else:
-            mostrar_pantalla("registro")
+            mostrar_pantalla("modificar", id_orden=current_order_ref[0])
+        elif numero_orden is not None:
+            mostrar_pantalla("modificar", id_orden=numero_orden)
 
     btn_modificar = ft.ElevatedButton(
         "Modificar",
@@ -104,7 +98,22 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         height=state["btn_h"],
         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=on_modificar,
-        visible=True,   # solo fase 1
+        visible=True,
+    )
+
+    def on_ver_orden(_):
+        if numero_orden is not None:
+            mostrar_pantalla("ver_orden", numero_orden=numero_orden)
+
+    btn_ver_orden = ft.ElevatedButton(
+        "Ver orden",
+        bgcolor=AZUL,
+        color="white",
+        width=state["btn_w"],
+        height=state["btn_h"],
+        style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+        on_click=on_ver_orden,
+        visible=False,
     )
 
     def on_salir(_):
@@ -118,7 +127,7 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         height=state["btn_h"],
         style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         on_click=on_salir,
-        visible=False,  # solo al finalizar
+        visible=False,
     )
 
     info_min = ft.Text(
@@ -128,7 +137,12 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         text_align=ft.TextAlign.CENTER,
     )
 
-    # ===== Layout =====
+    botones_final = ft.Column(
+        [btn_ver_orden, btn_salir],
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+        spacing=6,
+    )
+
     layout = ft.Column(
         [
             titulo,
@@ -136,9 +150,9 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
             image_control,
             fase_actual,
             progreso_bar,
-            ft.Row([btn_salir], alignment=ft.MainAxisAlignment.CENTER),      # aparece al final
+            botones_final,
             ft.Container(height=6),
-            ft.Row([btn_modificar], alignment=ft.MainAxisAlignment.CENTER),  # solo en Fase 1
+            ft.Row([btn_modificar], alignment=ft.MainAxisAlignment.CENTER),
             ft.Container(height=6),
             info_min,
         ],
@@ -158,7 +172,6 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
     page.add(root)
     page.update()
 
-    # ===== Fases =====
     TOTAL_PREP_SECONDS = 60
     phase_duration = TOTAL_PREP_SECONDS / 3
 
@@ -166,18 +179,19 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         for i, (name, emoji) in enumerate(phases):
             fase_actual.value = f"{emoji}  Fase: {name}"
             progreso_bar.value = (i + 1) / len(phases)
-            btn_modificar.visible = (i == 0)  # solo en Preparación
+            btn_modificar.visible = (i == 0)
             page.update()
             await asyncio.sleep(phase_duration)
 
         # Final
         fase_actual.value = "✅  Fase: Finalizada"
         progreso_bar.value = 1
-        image_control.src = "pizza_lista.png"  # imagen final exacta
+        image_control.src = "pizza_lista.png"
         txt_estado.value = "¡Pizza lista! 🍕"
         txt_estado.color = VERDE
         btn_modificar.visible = False
-        btn_salir.visible = True        # ahora sí mostramos "Salir"
+        btn_ver_orden.visible = True
+        btn_salir.visible = True
         page.update()
 
         if pedido_finalizado_ref is not None:
@@ -187,7 +201,6 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
 
     await run_fases()
 
-    # ===== on_resize =====
     def on_resize(e):
         recompute_sizes()
         image_control.width = state["img_size"]
@@ -197,6 +210,7 @@ async def pantalla_preparar(page, pedido, mostrar_pantalla, pedido_finalizado_re
         fase_actual.size = state["phase_size"]
         progreso_bar.width = state["box_w"]
         btn_salir.width = state["btn_w"]; btn_salir.height = state["btn_h"]
+        btn_ver_orden.width = state["btn_w"]; btn_ver_orden.height = state["btn_h"]
         btn_modificar.width = state["btn_w"]; btn_modificar.height = state["btn_h"]
         info_min.size = state["info_size"]
         root.padding = state["pad"]

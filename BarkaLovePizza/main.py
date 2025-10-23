@@ -57,8 +57,16 @@ def main(page: ft.Page):
                 # llamar al wrapper y pasar los refs para que se actualicen cuando termine
                 mostrar_carga_pizza(page, numero_orden, mostrar_pantalla, pedido_finalizado_ref, current_order_ref)
         elif nombre == "modificar":
+            from screens.modificar import pantalla_modificar
             page.add(pantalla_modificar(
-                page, masa, salsa, checkbox_ingredientes, mostrar_pantalla
+                page, masa, salsa, checkbox_ingredientes, mostrar_pantalla,
+                id_orden=kwargs.get("id_orden")
+            ))
+
+        elif nombre == "ver_orden":
+            from screens.ver_orden import pantalla_ver_orden
+            page.add(pantalla_ver_orden(
+                page, kwargs.get("numero_orden"), mostrar_pantalla
             ))
         page.update()
 
