@@ -45,5 +45,36 @@
         "cantidad": 1,
         "total_visual": 40,
         "moneda_visual": "USD"
+    },
+    {
+        "orden": 7540,
+        "cliente": "Daysi",
+        "metodo_pago": "Efectivo",
+        "items": [
+            {
+                "masa": "Delgada",
+                "salsa": "Tomate",
+                "tamano": "Individual",
+                "ingredientes": [
+                    "Queso extra",
+                    "Champiñones"
+                ],
+                "cantidad": 2,
+                "receta_tipo": "Pepperoni"
+            }
+        ],
+        "hora": "2025-11-10T21:23:36.520486",
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "tamano": "Individual",
+        "ingredientes": [
+            "Queso extra",
+            "Champiñones"
+        ],
+        "cantidad": 2,
+        "total_visual": 20,
+        "moneda_visual": "USD",
+        "receta_tipo": "Pepperoni",
+        "receta_version": "v1.0.0"
     }
 ]

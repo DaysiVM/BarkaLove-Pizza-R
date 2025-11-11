@@ -26,3 +26,6 @@
 [2025-10-23 13:25:10] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.4°C (> 280.0°C)
 [2025-10-23 13:25:11] ALERTA_SOBRECOCCION | Pedido #5075 | Temp 280.7°C (> 280.0°C)
 [2025-10-23 13:25:11] COCCION FIN | {'pedido': 5075, 'tipo_pizza': 'Jamon', 'temp_objetivo': 280.0, 'tiempo_objetivo_min': 0.9, 'temp_final': 280.7, 'tiempo_real_min': 0.89, 'fallas': []}
+[2025-11-10 21:23:56] COCCION INICIO | Pedido #7540 | Tipo: Pepperoni | Objetivo: 280.0°C, 10.8 min
+[2025-11-10 21:28:34] ALERTA_SENSOR | Pedido #7540 | Falla sensor temperatura (sin lectura)
+[2025-11-10 21:29:42] ALERTA_SENSOR | Pedido #7540 | Falla sensor temperatura (sin lectura)

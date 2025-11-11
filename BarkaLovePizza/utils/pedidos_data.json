@@ -42,5 +42,20 @@
     ],
     "estado": "Listo",
     "fecha": "2025-10-23 13:23:42"
+  },
+  {
+    "id": 7540,
+    "orden": 7540,
+    "cliente": "Daysi",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra",
+      "Champiñones"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-11-10 21:23:36"
   }
 ]
