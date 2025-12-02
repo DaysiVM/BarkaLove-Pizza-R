@@ -105,11 +105,31 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
         ),
     )
 
+    card_manuales_usuario = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Manuales de Usuario", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Visualiza y abre manuales de usuario en formato PDF.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=VERDE, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("manuales_usuario")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
+
     grid = ft.ResponsiveRow(
         controls=[
             ft.Container(card_recetas, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_kds, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_respaldo, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_manuales_usuario, col={"xs": 12, "md": 6, "lg": 6}),
         ],
         columns=12,
         spacing=12,
