@@ -25,41 +25,43 @@ def pantalla_admin_indicadores(page: ft.Page, mostrar_pantalla):
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
     )
 
-    # Cuadros de KPI
+    # Cuadros de KPI (reordenados: Pedidos Totales, Tiempo, Errores)
     kpi_row = ft.Row(
         [
             ft.Container(
                 content=ft.Column([
-                    ft.Text("Pedidos Totales", size=16, weight=ft.FontWeight.BOLD),
-                    ft.Text("120", size=20, color=AZUL),
-                ], spacing=4, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                padding=12,
+                    ft.Text("Pedidos Totales", size=16, weight=ft.FontWeight.BOLD, color=NEGRO),
+                    ft.Text("120", size=22, color=AZUL, weight=ft.FontWeight.W_700),
+                ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                padding=16,
                 bgcolor="white",
-                border_radius=10,
-                width=180,
-                height=100,
+                border_radius=12,
+                width=200,
+                height=110,
             ),
+            ft.Container(width=12),
             ft.Container(
                 content=ft.Column([
-                    ft.Text("Errores Detectados", size=16, weight=ft.FontWeight.BOLD),
-                    ft.Text("5", size=20, color=ROJO),
-                ], spacing=4, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                padding=12,
+                    ft.Text("Tiempo Promedio", size=16, weight=ft.FontWeight.BOLD, color=NEGRO),
+                    ft.Text("10 min", size=22, color=AZUL, weight=ft.FontWeight.W_700),
+                ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                padding=16,
                 bgcolor="white",
-                border_radius=10,
-                width=180,
-                height=100,
+                border_radius=12,
+                width=200,
+                height=110,
             ),
+            ft.Container(width=12),
             ft.Container(
                 content=ft.Column([
-                    ft.Text("Pedidos Completados", size=16, weight=ft.FontWeight.BOLD),
-                    ft.Text("95%", size=20, color="#2A9D8F"),
-                ], spacing=4, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                padding=12,
+                    ft.Text("Errores Detectados", size=16, weight=ft.FontWeight.BOLD, color=NEGRO),
+                    ft.Text("5", size=22, color=ROJO, weight=ft.FontWeight.W_700),
+                ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                padding=16,
                 bgcolor="white",
-                border_radius=10,
-                width=180,
-                height=100,
+                border_radius=12,
+                width=200,
+                height=110,
             ),
         ],
         spacing=12,
@@ -76,30 +78,106 @@ def pantalla_admin_indicadores(page: ft.Page, mostrar_pantalla):
     )
 
     # Contenedor principal
+    # Descripción principal fuera de la tarjeta blanca (según indicación)
+    descripcion = ft.Text(
+        "Panel de Monitoreo de KPIs: visualización del rendimiento del BarkaLove Pizza al instante",
+        size=14,
+        color=NEGRO
+    )
+
     cuerpo = ft.Column(
         [
+            descripcion,
+            # Pequeña tarjeta resumen (opcional) para título interno
+            ft.Container(
+                content=ft.Text("Monitoreo de KPIs", size=18, weight=ft.FontWeight.BOLD, color=NEGRO),
+                padding=ft.padding.symmetric(vertical=8, horizontal=12),
+                bgcolor="white",
+                border_radius=12
+            ),
+            # Métricas como tarjetas (reemplazan los botones previos)
+            ft.Row([
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text("Pedidos Completados", size=14, weight=ft.FontWeight.W_600, color=NEGRO),
+                        ft.Text("98", size=20, weight=ft.FontWeight.W_700, color=AZUL),
+                    ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                    padding=16,
+                    bgcolor="white",
+                    border_radius=12,
+                    width=200,
+                    height=100,
+                ),
+                ft.Container(width=12),
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text("En Proceso", size=14, weight=ft.FontWeight.W_600, color=NEGRO),
+                        ft.Text("16", size=20, weight=ft.FontWeight.W_700, color=AZUL),
+                    ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                    padding=16,
+                    bgcolor="white",
+                    border_radius=12,
+                    width=200,
+                    height=100,
+                ),
+                ft.Container(width=12),
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text("Tiempo Promedio de Preparación", size=14, weight=ft.FontWeight.W_600, color=NEGRO),
+                        ft.Text("15 min", size=20, weight=ft.FontWeight.W_700, color=AZUL),
+                    ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                    padding=16,
+                    bgcolor="white",
+                    border_radius=12,
+                    width=260,
+                    height=100,
+                ),
+                ft.Container(width=12),
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text("Errores Reportados", size=14, weight=ft.FontWeight.W_600, color=NEGRO),
+                        ft.Text("3", size=20, weight=ft.FontWeight.W_700, color=ROJO),
+                    ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                    padding=16,
+                    bgcolor="white",
+                    border_radius=12,
+                    width=200,
+                    height=100,
+                ),
+                ft.Container(width=12),
+                ft.Container(
+                    content=ft.Column([
+                        ft.Text("Entregas Tardías", size=14, weight=ft.FontWeight.W_600, color=NEGRO),
+                        ft.Text("2", size=20, weight=ft.FontWeight.W_700, color=ROJO),
+                    ], spacing=6, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+                    padding=16,
+                    bgcolor="white",
+                    border_radius=12,
+                    width=200,
+                    height=100,
+                ),
+            ], alignment=ft.MainAxisAlignment.START, spacing=8, scroll=True),
+
+            # Sección de detalles (reemplaza el gráfico)
             ft.Container(
                 content=ft.Column([
-                    ft.Text("Monitoreo de KPIs", size=18, weight=ft.FontWeight.BOLD, color=NEGRO),
-                    ft.Container(height=4),
-                    ft.Text("Productividad, tiempos y errores", size=14, color=GRIS),
-                ], spacing=4),
-                padding=12,
+                    ft.Text("Detalles", size=16, weight=ft.FontWeight.BOLD, color=NEGRO),
+                    ft.Container(height=8),
+                    ft.Text("Resumen de los últimos eventos y observaciones:", size=14, color=GRIS),
+                    ft.Container(height=8),
+                    ft.Column([
+                        ft.Row([ft.Text("• 98 pedidos completados hoy", color=NEGRO)]),
+                        ft.Row([ft.Text("• 3 errores reportados en cocina (ver registros)", color=NEGRO)]),
+                        ft.Row([ft.Text("• 2 entregas tardías: órdenes #452, #467", color=NEGRO)]),
+                        ft.Row([ft.Text("• Tiempo promedio de preparación: 15 minutos", color=NEGRO)]),
+                    ], spacing=6)
+                ], spacing=8),
+                padding=16,
                 bgcolor="white",
-                border_radius=10
-            ),
-            # Fila de acciones/controles (visuales, no funcionales)
-            ft.Row([
-                ft.ElevatedButton("Refrescar", bgcolor=AZUL, color="white", height=36),
-                ft.Container(width=8),
-                ft.ElevatedButton("Exportar CSV", height=36),
-                ft.Container(width=8),
-                ft.ElevatedButton("Configurar alertas", height=36),
-                ft.Container(width=8),
-                ft.Dropdown(label="Ver:", options=[ft.dropdown.Option("Últimas 24h"), ft.dropdown.Option("Última semana"), ft.dropdown.Option("Último mes")], value="Última semana", width=180),
-            ], alignment=ft.MainAxisAlignment.START),
-            kpi_row,
-            grafico
+                border_radius=12,
+                width="100%",
+                height=200
+            )
         ],
         spacing=16
     )
