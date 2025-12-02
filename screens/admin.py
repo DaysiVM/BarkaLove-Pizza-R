@@ -3,6 +3,7 @@ from __future__ import annotations
 import flet as ft
 import utils.recetas as rx
 import utils.kds as kds
+import screens.manuales_usuario as mu
 
 ROJO = "#E63946"
 CREMA = "#FFF8E7"
@@ -99,6 +100,25 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
                     "Abrir",
                     bgcolor=VERDE, color="white", height=40,
                     on_click=lambda _: mostrar_pantalla("admin_respaldo")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
+
+    card_manuales_usuario = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Manuales de Usuario", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Visualiza y abre manuales de usuario en formato PDF.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=VERDE, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("manuales_usuario")
                 ),
             ],
             spacing=6,
