@@ -1,54 +1,154 @@
 [
     {
-        "orden": 3632,
-        "cliente": "Nelson",
+        "orden": 5330,
         "masa": "Delgada",
         "salsa": "Tomate",
         "ingredientes": [
             "Queso extra",
             "Pepperoni"
         ],
-        "cantidad": 1,
-        "metodo_pago": "Efectivo",
-        "hora": "2025-10-22T09:05:02.914184"
+        "hora": "2025-10-21T11:07:51.881609"
     },
     {
-        "orden": 7892,
-        "cliente": "Tsuki",
-        "metodo_pago": "Efectivo",
-        "items": [
-            {
-                "masa": "Delgada",
-                "salsa": "Tomate",
-                "ingredientes": [
-                    "Queso extra",
-                    "Pepperoni"
-                ],
-                "cantidad": 1
-            },
-            {
-                "masa": "Delgada",
-                "salsa": "Tomate",
-                "ingredientes": [
-                    "Jamón"
-                ],
-                "cantidad": 3
-            }
-        ],
-        "hora": "2025-10-22T10:48:40.048222",
+        "orden": 1338,
         "masa": "Delgada",
         "salsa": "Tomate",
         "ingredientes": [
             "Queso extra",
             "Pepperoni"
         ],
-        "cantidad": 1,
-        "total_visual": 40,
-        "moneda_visual": "USD"
+        "hora": "2025-10-21T11:14:51.891267"
     },
     {
-        "orden": 7540,
-        "cliente": "Daysi",
+        "orden": 4094,
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni",
+            "Champi\u00f1ones"
+        ],
+        "hora": "2025-10-21T11:15:00.511994"
+    },
+    {
+        "orden": 3857,
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni"
+        ],
+        "hora": "2025-10-21T11:48:50.233606"
+    },
+    {
+        "orden": 4349,
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni",
+            "Champi\u00f1ones"
+        ],
+        "hora": "2025-10-21T11:49:09.123117"
+    },
+    {
+        "orden": 2227,
+        "masa": "Gruesa",
+        "salsa": "BBQ",
+        "ingredientes": [
+            "Champi\u00f1ones",
+            "Aceitunas"
+        ],
+        "hora": "2025-10-21T11:53:45.194655"
+    },
+    {
+        "orden": 8660,
+        "masa": "Gruesa",
+        "salsa": "BBQ",
+        "ingredientes": [
+            "Pepperoni",
+            "Champi\u00f1ones",
+            "Aceitunas"
+        ],
+        "hora": "2025-10-21T11:54:50.333309"
+    },
+    {
+        "orden": 4421,
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni"
+        ],
+        "hora": "2025-10-21T11:56:45.947619"
+    },
+    {
+        "orden": 3557,
+        "masa": "Delgada",
+        "salsa": "BBQ",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni",
+            "Champi\u00f1ones"
+        ],
+        "hora": "2025-10-21T12:13:17.022155"
+    },
+    {
+        "orden": 7750,
+        "masa": "Delgada",
+        "salsa": "BBQ",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni",
+            "Champi\u00f1ones"
+        ],
+        "hora": "2025-10-21T12:13:57.716881"
+    },
+    {
+        "orden": 6521,
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni",
+            "Champi\u00f1ones"
+        ],
+        "hora": "2025-10-21T12:24:45.979902"
+    },
+    {
+        "orden": 1847,
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni",
+            "Champi\u00f1ones"
+        ],
+        "hora": "2025-10-21T12:31:20.788571"
+    },
+    {
+        "orden": 9126,
+        "masa": "Delgada",
+        "salsa": "BBQ",
+        "ingredientes": [
+            "Pepperoni",
+            "Pimientos"
+        ],
+        "hora": "2025-10-21T12:34:21.250613"
+    },
+    {
+        "orden": 8590,
+        "masa": "Delgada",
+        "salsa": "Blanca",
+        "ingredientes": [
+            "Queso extra",
+            "Pepperoni"
+        ],
+        "hora": "2025-10-21T15:42:01.970054"
+    },
+    {
+        "orden": 9980,
+        "cliente": "Daysi3",
         "metodo_pago": "Efectivo",
         "items": [
             {
@@ -57,24 +157,23 @@
                 "tamano": "Individual",
                 "ingredientes": [
                     "Queso extra",
-                    "Champiñones"
+                    "Pi\u00f1a"
                 ],
-                "cantidad": 2,
-                "receta_tipo": "Pepperoni"
+                "cantidad": 1
             }
         ],
-        "hora": "2025-11-10T21:23:36.520486",
+        "hora": "2025-11-13T08:55:03.251381",
         "masa": "Delgada",
         "salsa": "Tomate",
         "tamano": "Individual",
         "ingredientes": [
             "Queso extra",
-            "Champiñones"
+            "Pi\u00f1a"
         ],
-        "cantidad": 2,
-        "total_visual": 20,
+        "cantidad": 1,
+        "total_visual": 10,
         "moneda_visual": "USD",
-        "receta_tipo": "Pepperoni",
+        "receta_tipo": "Hawaiana",
         "receta_version": "v1.0.0"
     }
 ]

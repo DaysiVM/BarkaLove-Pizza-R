@@ -1,0 +1,105 @@
+[
+  {
+    "id": 2022,
+    "orden": 2022,
+    "cliente": "asd",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra",
+      "Pepperoni",
+      "Champiñones"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-10-23 13:14:33"
+  },
+  {
+    "id": 8220,
+    "orden": 8220,
+    "cliente": "asjda",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-10-23 13:18:45"
+  },
+  {
+    "id": 5075,
+    "orden": 5075,
+    "cliente": "asda",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Jamón"
+    ],
+    "estado": "Listo",
+    "fecha": "2025-10-23 13:23:42"
+  },
+  {
+    "id": 7540,
+    "orden": 7540,
+    "cliente": "Daysi",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra",
+      "Champiñones"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-11-10 21:23:36"
+  },
+  {
+    "id": 8828,
+    "orden": 8828,
+    "cliente": "daysi",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-11-12 22:08:28"
+  },
+  {
+    "id": 1937,
+    "orden": 1937,
+    "cliente": "ubyvtcr",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Gruesa",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra",
+      "Pepperoni",
+      "Champiñones"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-11-12 22:18:23"
+  },
+  {
+    "id": 9980,
+    "orden": 9980,
+    "cliente": "Daysi3",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "Listo",
+    "fecha": "2025-11-13 08:55:03"
+  }
+]
