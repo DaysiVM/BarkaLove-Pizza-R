@@ -121,6 +121,9 @@ def main(page: ft.Page):
         elif nombre == "programar_mantenimiento":
             from screens.programar_mantenimiento import pantalla_programar_mantenimiento
             page.add(pantalla_programar_mantenimiento(page, mostrar_pantalla, title=kwargs.get("title")))
+        elif nombre == "programar_mantenimiento_confirm":
+            from screens.programar_mantenimiento import pantalla_programar_mantenimiento_confirm
+            page.add(pantalla_programar_mantenimiento_confirm(page, mostrar_pantalla, title=kwargs.get("title"), date=kwargs.get("date"), time=kwargs.get("time")))
 
         elif nombre == "kds":
             from screens.kds import pantalla_kds
