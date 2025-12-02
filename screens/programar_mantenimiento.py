@@ -50,12 +50,7 @@ def pantalla_programar_mantenimiento(page: ft.Page, mostrar_pantalla, title: str
         sel_time = ddl_time.value
         sel_iso = sel_date.isoformat()
 
-        # Guardar en session
-        scheduled = page.session.get("scheduled_maint", [])
-        scheduled.append({"title": title, "date": sel_iso, "time": sel_time})
-        page.session["scheduled_maint"] = scheduled
-
-        # Ir a pantalla de confirmación
+        # Solo navegar a pantalla de confirmación (no guardar en sesión)
         mostrar_pantalla("programar_mantenimiento_confirm", title=title, date=sel_iso, time=sel_time)
 
     btn_save = ft.ElevatedButton("Guardar", bgcolor=AZUL, color="white", on_click=guardar)
