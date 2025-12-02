@@ -90,6 +90,10 @@ def main(page: ft.Page):
             from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_recetas(page, mostrar_pantalla))
 
+        elif nombre == "admin_indicadores":
+            from screens.admin_indicadores import pantalla_admin_indicadores
+            page.add(pantalla_admin_indicadores(page, mostrar_pantalla))
+
         elif nombre == "admin_respaldo":
             from screens.admin_respaldo import pantalla_admin_respaldo
             page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
