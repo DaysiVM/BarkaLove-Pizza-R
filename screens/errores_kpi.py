@@ -46,6 +46,44 @@ def pantalla_errores_kpi(page: ft.Page, mostrar_pantalla):
         width="100%",
     )
 
-    layout = ft.Column([header, ft.Divider(), alerta], spacing=12)
+    # Descripciones adicionales de errores
+    moldeadora = ft.Container(
+        content=ft.Column([
+            ft.Text("Alerta: Moldeadora #2 - Desalineación del transportador", size=15, weight=ft.FontWeight.W_700, color=NEGRO),
+            ft.Container(height=6),
+            ft.Text(
+                "Se ha detectado un incremento en los rechazos dimensionales atribuibles a desalineación intermitente del transportador de entrada en la unidad Moldeadora #2. Se observan variaciones laterales de hasta 3 mm en el posicionamiento del molde durante el ciclo de carga, lo que afecta la geometría de la base.",
+                size=13,
+                color=NEGRO
+            ),
+            ft.Container(height=6),
+            ft.Text("Acciones recomendadas: Realinear guías del transportador, verificar sensores de referencia de posición y ajustar la tensión de la correa motriz. Inspección visual de rodillos y sustitución si presentan desgaste.", size=13, color=NEGRO),
+        ], spacing=8),
+        padding=16,
+        bgcolor="white",
+        border_radius=12,
+        width="100%",
+    )
+
+    empaquetado = ft.Container(
+        content=ft.Column([
+            ft.Text("Alerta: Línea de empaquetado - Sellado térmico intermitente", size=15, weight=ft.FontWeight.W_700, color=NEGRO),
+            ft.Container(height=6),
+            ft.Text(
+                "Se han reportado fallos de sellado en la estación de empaquetado: sellos inconsistentes y bordes parcialmente adheridos. Los registros muestran fluctuaciones de temperatura en la resistencia de sellado y lecturas inconsistentes del sensor térmico.",
+                size=13,
+                color=NEGRO
+            ),
+            ft.Container(height=6),
+            ft.Text("Acciones recomendadas: Limpiar cabezales de sellado, comprobar y recalibrar el sensor de temperatura, revisar la alimentación y los relés del circuito de potencia, y ajustar parámetros PID del controlador de temperatura.", size=13, color=NEGRO),
+        ], spacing=8),
+        padding=16,
+        bgcolor="white",
+        border_radius=12,
+        width="100%",
+    )
+
+    layout = ft.Column([header, ft.Divider(), alerta, moldeadora, empaquetado], spacing=12)
     root = ft.Container(layout, padding=16, bgcolor=CREMA, expand=True)
     return root
+
