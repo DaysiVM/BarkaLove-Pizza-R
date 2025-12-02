@@ -94,6 +94,14 @@ def main(page: ft.Page):
             from screens.admin_respaldo import pantalla_admin_respaldo
             page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
 
+        elif nombre == "manual_backup":
+            from screens.manual_backup import pantalla_manual_backup
+            page.add(pantalla_manual_backup(page, mostrar_pantalla))
+
+        elif nombre == "respaldo_detalle":
+            from screens.respaldo_detalle import pantalla_respaldo_detalle
+            page.add(pantalla_respaldo_detalle(page, kwargs.get("backup"), mostrar_pantalla))
+
         elif nombre == "kds":
             from screens.kds import pantalla_kds
             page.add(pantalla_kds(page, mostrar_pantalla))
