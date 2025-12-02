@@ -143,23 +143,16 @@ def pantalla_admin_respaldo(page: ft.Page, mostrar_pantalla):
         mostrar_pantalla("respaldo_detalle", backup=backup)
 
     def MostrarErrores(backup=None):
-        if backup is None or backup.get('estado') == 'Correcto':
+        if backup is None:
             mostrar_snack('Sin errores')
             return
-        # Para el placeholder mostramos una alerta con texto simulado
-        contenido = ft.Column([
-            ft.Text(f"Errores de la copia {backup.get('version', '-')}", color=NEGRO),
-            ft.Container(height=8),
-            ft.Text("(Detalle de errores simulado)", color=NEGRO),
-        ])
-        dlg = ft.AlertDialog(
-            title=ft.Text("Errores en la copia", color=NEGRO),
-            content=contenido,
-            actions=[ft.TextButton("Cerrar", on_click=lambda e: (setattr(page, 'dialog', None), page.update()))],
-        )
-        page.dialog = dlg
-        page.dialog.open = True
-        page.update()
+
+        if backup.get('estado') == 'Correcto':
+            mostrar_snack('Sin errores')
+            return
+
+        # Para backups fallidos, navegamos a la pantalla de detalle y mostramos errores
+        mostrar_pantalla("respaldo_detalle", backup=backup)
 
     def RunManualBackup(_event, tipo_ctrl=None):
         tipo = tipo_ctrl.value if tipo_ctrl is not None else "-"
@@ -252,7 +245,23 @@ def pantalla_admin_respaldo(page: ft.Page, mostrar_pantalla):
     backups = [
         {"fecha": "01/12/2025 - 08:58 PM", "tipo": "Completo", "tamaño": "2.1 GB", "estado": "Correcto", "ubicacion": "Servidor/Nube", "version": "v15"},
         {"fecha": "01/12/2025 - 06:00 AM", "tipo": "Incremental", "tamaño": "230 MB", "estado": "Correcto", "ubicacion": "Servidor", "version": "v14"},
-        {"fecha": "30/11/2025 - 08:00 PM", "tipo": "Completo", "tamaño": "2.0 GB", "estado": "Fallido", "ubicacion": "Servidor", "version": "v13"},
+        {
+            "fecha": "30/11/2025 - 08:00 PM",
+            "tipo": "Completo",
+            "tamaño": "2.0 GB",
+            "estado": "Fallido",
+            "ubicacion": "Servidor",
+            "version": "v13",
+            "error_summary": "Fallo en escritura parcial del archivo de respaldo",
+            "error_details": {
+                "code": "ERR_WRITE_507",
+                "ruta": r"\\Server\backups\2025\v13_backup.tar",
+                "stack": "Traceback (most recent call last):\n  File \"/app/backup.py\", line 234, in write_backup\n    write_chunk(chunk)\n  File \"/app/storage.py\", line 89, in write_chunk\n    raise IOError('Disk quota exceeded')\nOSError: Disk quota exceeded",
+                "size_expected": "2.0 GB",
+                "size_actual": "1.4 GB",
+                "service": "storage-service-1",
+            }
+        },
     ]
 
     table = ft.DataTable(

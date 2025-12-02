@@ -102,6 +102,10 @@ def main(page: ft.Page):
             from screens.respaldo_detalle import pantalla_respaldo_detalle
             page.add(pantalla_respaldo_detalle(page, kwargs.get("backup"), mostrar_pantalla))
 
+        elif nombre == "respaldo_proceso":
+            from screens.respaldo_proceso import pantalla_respaldo_proceso
+            page.add(pantalla_respaldo_proceso(page, mostrar_pantalla))
+
         elif nombre == "automation_config":
             from screens.automation_config import pantalla_automation_config
             page.add(pantalla_automation_config(page, mostrar_pantalla))
