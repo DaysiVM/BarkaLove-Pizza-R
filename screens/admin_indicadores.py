@@ -78,43 +78,26 @@ def pantalla_admin_indicadores(page: ft.Page, mostrar_pantalla):
         color=NEGRO
     )
 
-    # DatePickers y control para 'Personalizado' (inicialmente ocultos)
-    date_from = ft.DatePicker(label="Desde", visible=False)
-    date_to = ft.DatePicker(label="Hasta", visible=False)
-    date_row = ft.Row([date_from, ft.Container(width=12), date_to], alignment=ft.MainAxisAlignment.CENTER, visible=False)
-
-    def on_range_change(e):
-        # Mostrar los datepickers cuando se selecciona 'Personalizado'
-        try:
-            sel = e.control.value
-        except Exception:
-            sel = None
-        if sel == "Personalizado":
-            date_row.visible = True
-        else:
-            date_row.visible = False
-        page.update()
-
-    date_range_dd = ft.Dropdown(
-        width=260,
-        value="Hoy",
-        options=[
-            ft.dropdown.Option("Hoy"),
-            ft.dropdown.Option("Ayer"),
-            ft.dropdown.Option("Esta semana"),
-            ft.dropdown.Option("Este mes"),
-            ft.dropdown.Option("Personalizado"),
-        ],
-        on_change=on_range_change,
-    )
-
     cuerpo = ft.Column(
         [
             descripcion,
             # Selector de rango de fechas (centrado, formato predeterminado)
-            ft.Row([date_range_dd], alignment=ft.MainAxisAlignment.CENTER),
-            # DatePickers (visibles solo si se selecciona 'Personalizado')
-            date_row,
+            ft.Row(
+                [
+                    ft.Dropdown(
+                        width=260,
+                        value="Hoy",
+                        options=[
+                            ft.dropdown.Option("Hoy"),
+                            ft.dropdown.Option("Ayer"),
+                            ft.dropdown.Option("Esta semana"),
+                            ft.dropdown.Option("Este mes"),
+                            ft.dropdown.Option("Personalizado"),
+                        ],
+                    )
+                ],
+                alignment=ft.MainAxisAlignment.CENTER
+            ),
             # tarjeta de título removida por petición (se mantiene solo la descripción)
             # Métricas como tarjetas (reemplazan los botones previos)
             ft.Row([
