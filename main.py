@@ -118,6 +118,10 @@ def main(page: ft.Page):
             from screens.automation_config import pantalla_automation_config
             page.add(pantalla_automation_config(page, mostrar_pantalla))
 
+        elif nombre == "programar_mantenimiento":
+            from screens.programar_mantenimiento import pantalla_programar_mantenimiento
+            page.add(pantalla_programar_mantenimiento(page, mostrar_pantalla, title=kwargs.get("title")))
+
         elif nombre == "kds":
             from screens.kds import pantalla_kds
             page.add(pantalla_kds(page, mostrar_pantalla))

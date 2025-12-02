@@ -39,6 +39,10 @@ def pantalla_errores_kpi(page: ft.Page, mostrar_pantalla):
             ft.Container(height=8),
             ft.Text("Impacto esperado:", size=14, weight=ft.FontWeight.W_600, color=NEGRO),
             ft.Text("Se estima una ventana de mantenimiento de 2-4 horas dependiendo de la disponibilidad de repuestos; prioridad: ALTA.", color=NEGRO),
+            ft.Container(height=8),
+            ft.Row([
+                ft.ElevatedButton("Programar mantenimiento", bgcolor=AZUL, color="white", on_click=lambda e: mostrar_pantalla("programar_mantenimiento", title="Amasadora #3")),
+            ], alignment=ft.MainAxisAlignment.END)
         ], spacing=8),
         padding=16,
         bgcolor="white",
@@ -49,7 +53,7 @@ def pantalla_errores_kpi(page: ft.Page, mostrar_pantalla):
     # Descripciones adicionales de errores
     moldeadora = ft.Container(
         content=ft.Column([
-            ft.Text("Alerta: Moldeadora #2 - Desalineación del transportador", size=15, weight=ft.FontWeight.W_700, color=NEGRO),
+            ft.Text("Alerta de mantenimiento: Moldeadora #2 - Desalineación del transportador", size=15, weight=ft.FontWeight.W_700, color=NEGRO),
             ft.Container(height=6),
             ft.Text(
                 "Se ha detectado un incremento en los rechazos dimensionales atribuibles a desalineación intermitente del transportador de entrada en la unidad Moldeadora #2. Se observan variaciones laterales de hasta 3 mm en el posicionamiento del molde durante el ciclo de carga, lo que afecta la geometría de la base.",
@@ -58,6 +62,10 @@ def pantalla_errores_kpi(page: ft.Page, mostrar_pantalla):
             ),
             ft.Container(height=6),
             ft.Text("Acciones recomendadas: Realinear guías del transportador, verificar sensores de referencia de posición y ajustar la tensión de la correa motriz. Inspección visual de rodillos y sustitución si presentan desgaste.", size=13, color=NEGRO),
+            ft.Container(height=8),
+            ft.Row([
+                ft.ElevatedButton("Programar mantenimiento", bgcolor=AZUL, color="white", on_click=lambda e: mostrar_pantalla("programar_mantenimiento", title="Moldeadora #2")),
+            ], alignment=ft.MainAxisAlignment.END),
         ], spacing=8),
         padding=16,
         bgcolor="white",
@@ -76,6 +84,10 @@ def pantalla_errores_kpi(page: ft.Page, mostrar_pantalla):
             ),
             ft.Container(height=6),
             ft.Text("Acciones recomendadas: Limpiar cabezales de sellado, comprobar y recalibrar el sensor de temperatura, revisar la alimentación y los relés del circuito de potencia, y ajustar parámetros PID del controlador de temperatura.", size=13, color=NEGRO),
+            ft.Container(height=8),
+            ft.Row([
+                ft.ElevatedButton("Programar mantenimiento", bgcolor=AZUL, color="white", on_click=lambda e: mostrar_pantalla("programar_mantenimiento", title="Línea de empaquetado")),
+            ], alignment=ft.MainAxisAlignment.END),
         ], spacing=8),
         padding=16,
         bgcolor="white",
