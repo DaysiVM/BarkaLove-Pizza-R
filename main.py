@@ -110,6 +110,10 @@ def main(page: ft.Page):
             from screens.kds import pantalla_kds
             page.add(pantalla_kds(page, mostrar_pantalla))
 
+        elif nombre == "manuales_usuario":
+            from screens.manuales_usuario import pantalla_manuales_usuario
+            page.add(pantalla_manuales_usuario(page, mostrar_pantalla))
+
         page.update()
 
     # Pantalla inicial
