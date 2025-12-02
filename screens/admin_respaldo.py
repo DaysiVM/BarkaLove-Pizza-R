@@ -239,10 +239,9 @@ def pantalla_admin_respaldo(page: ft.Page, mostrar_pantalla):
 
     # --- Botones de acción ---
     btn_manual = ft.ElevatedButton("Generar Respaldo Manual", bgcolor="#FFD93D", color="#1565C0", on_click=lambda e: mostrar_pantalla("manual_backup"), height=44)
-    btn_open_folder = ft.ElevatedButton("Carpeta de ubicación", bgcolor="#FFD93D", color="#1565C0", on_click=OpenBackupFolder, height=44)
-    btn_automation = ft.ElevatedButton("Configurar Automatización", bgcolor="#FFD93D", color="#1565C0", on_click=OpenAutomationConfig, height=44)
+    btn_automation = ft.ElevatedButton("Configurar Automatización", bgcolor="#FFD93D", color="#1565C0", on_click=lambda e: mostrar_pantalla("automation_config"), height=44)
 
-    actions_row = ft.Row([btn_manual, ft.Container(width=12), btn_open_folder, ft.Container(width=12), btn_automation], alignment=ft.MainAxisAlignment.START)
+    actions_row = ft.Row([btn_manual, ft.Container(width=12), btn_automation], alignment=ft.MainAxisAlignment.START)
 
     # --- Tabla de backups ---
     backups = [

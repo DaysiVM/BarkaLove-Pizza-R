@@ -24,7 +24,7 @@ def pantalla_respaldo_detalle(page: ft.Page, backup: dict | None, mostrar_pantal
         ft.Text(f"Estado: {b.get('estado')}", color=NEGRO),
         ft.Container(height=16),
         ft.Row([
-            ft.ElevatedButton("Restaurar esta copia", on_click=lambda e: _confirm_restore(page), width=300)
+            ft.ElevatedButton("Restaurar esta copia", on_click=lambda e: _confirm_restore_dialog(page, b, mostrar_pantalla), width=300)
         ], alignment=ft.MainAxisAlignment.CENTER)
     ], spacing=8)
 
@@ -35,6 +35,40 @@ def pantalla_respaldo_detalle(page: ft.Page, backup: dict | None, mostrar_pantal
 def _confirm_restore(page: ft.Page):
     page.snack_bar = ft.SnackBar(ft.Text("Restauración iniciada (simulada)", color="white"), bgcolor="#FFD54F")
     page.snack_bar.open = True
+    page.update()
+
+
+def _confirm_restore_dialog(page: ft.Page, backup: dict | None, mostrar_pantalla):
+    b = backup or {"version": "-", "fecha": "-", "tipo": "-"}
+    contenido = ft.Column([
+        ft.Text(f"Versión: {b.get('version')}", color=NEGRO),
+        ft.Text(f"Fecha: {b.get('fecha')}", color=NEGRO),
+        ft.Text(f"Tipo: {b.get('tipo')}", color=NEGRO),
+        ft.Container(height=8),
+        ft.Text("La restauración sobrescribirá datos actuales. ¿Desea continuar?", color=NEGRO),
+    ], spacing=6)
+
+    def _do_restore(ev):
+        # cerrar dialog
+        if page.dialog:
+            page.dialog.open = False
+        # simular acción de restauración
+        page.snack_bar = ft.SnackBar(ft.Text("Restauración iniciada (simulada)", color="white"), bgcolor="#FFD54F")
+        page.snack_bar.open = True
+        page.update()
+        # regresar a la lista de respaldos
+        mostrar_pantalla("admin_respaldo")
+
+    dlg = ft.AlertDialog(
+        title=ft.Text("Confirmar restauración", color=NEGRO),
+        content=contenido,
+        actions=[
+            ft.ElevatedButton("Confirmar", on_click=_do_restore, bgcolor="#2A9D8F"),
+            ft.TextButton("Salir", on_click=lambda e: (setattr(page, 'dialog', None), mostrar_pantalla("admin_respaldo"))),
+        ],
+    )
+    page.dialog = dlg
+    page.dialog.open = True
     page.update()
 
 
