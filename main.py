@@ -5,7 +5,6 @@ from screens.registro import pantalla_registro
 from screens.modificar import pantalla_modificar
 from screens.inicio import pantalla_inicio
 
-# Si tienes otros screens, los cargamos bajo demanda en el router
 
 
 ingredientes_data = [
@@ -89,6 +88,10 @@ def main(page: ft.Page):
         elif nombre == "admin_recetas":
             from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_recetas(page, mostrar_pantalla))
+
+        elif nombre == "admin_indicadores":
+            from screens.admin_indicadores import pantalla_admin_indicadores
+            page.add(pantalla_admin_indicadores(page, mostrar_pantalla))
 
         elif nombre == "admin_respaldo":
             from screens.admin_respaldo import pantalla_admin_respaldo
