@@ -50,8 +50,9 @@ def _confirm_restore_dialog(page: ft.Page, backup: dict | None, mostrar_pantalla
 
     def _do_restore(ev):
         # cerrar dialog
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
         # simular acción de restauración
         page.snack_bar = ft.SnackBar(ft.Text("Restauración iniciada (simulada)", color="white"), bgcolor="#FFD54F")
         page.snack_bar.open = True

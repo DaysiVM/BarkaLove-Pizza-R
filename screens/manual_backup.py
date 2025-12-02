@@ -15,7 +15,7 @@ def pantalla_manual_backup(page: ft.Page, mostrar_pantalla):
     # Controles solicitados (paneles claros como en automation_config)
     field_style = dict(bgcolor="white", padding=ft.padding.all(12), border_radius=8)
 
-    tipo_dd = ft.Dropdown(options=[ft.dropdown.Option("Completo"), ft.dropdown.Option("Incremental")], value=None)
+    tipo_dd = ft.Dropdown(options=[ft.dropdown.Option("Completo"), ft.dropdown.Option("Incremental")], value="Completo")
     tipo_panel = ft.Container(content=ft.Column([ft.Text("Tipo de Respaldo", weight=ft.FontWeight.W_600, color=NEGRO), tipo_dd], spacing=6), width=520, **field_style)
 
     destino_dd = ft.Dropdown(options=[ft.dropdown.Option("Carpeta local predeterminada"), ft.dropdown.Option("Servidor/Nube")], value="Carpeta local predeterminada")
@@ -24,7 +24,7 @@ def pantalla_manual_backup(page: ft.Page, mostrar_pantalla):
     compresion_dd = ft.Dropdown(options=[ft.dropdown.Option("Ninguna"), ft.dropdown.Option("Media"), ft.dropdown.Option("Máxima")], value="Ninguna")
     compresion_panel = ft.Container(content=ft.Column([ft.Text("Nivel de Compresión", weight=ft.FontWeight.W_600, color=NEGRO), compresion_dd], spacing=6), width=360, **field_style)
 
-    encriptacion_dd = ft.Dropdown(options=[ft.dropdown.Option("No"), ft.dropdown.Option("AES-256")], value=None)
+    encriptacion_dd = ft.Dropdown(options=[ft.dropdown.Option("No"), ft.dropdown.Option("AES-256")], value="No")
     encriptacion_panel = ft.Container(content=ft.Column([ft.Text("Encriptación", weight=ft.FontWeight.W_600, color=NEGRO), encriptacion_dd], spacing=6), width=360, **field_style)
 
     notificacion_dd = ft.Dropdown(options=[ft.dropdown.Option("Ninguna"), ft.dropdown.Option("Mostrar mensaje en la pantalla"), ft.dropdown.Option("Enviar correo electrónico")], value="Ninguna")
@@ -47,27 +47,14 @@ def pantalla_manual_backup(page: ft.Page, mostrar_pantalla):
             page.snack_bar.open = True
             page.update()
             return
-
-        # Abrir diálogo de confirmación con resumen
-        resumen = f"Tipo: {tipo_dd.value or '-'}\nDestino: {destino_dd.value or '-'}\nCompresión: {compresion_dd.value or '-'}\nEncriptación: {encriptacion_dd.value or '-'}\nNotificación: {notificacion_dd.value or '-'}"
-
-        dialog = ft.AlertDialog(
-            modal=True,
-            title=ft.Text("Confirmar Respaldo Manual", color=NEGRO),
-            content=ft.Column([ft.Text("Revise la configuración antes de iniciar:", color=NEGRO), ft.Text(resumen, color=NEGRO)], spacing=8),
-            actions=[
-                ft.ElevatedButton("Confirmar", on_click=lambda ev, t=tipo_dd.value, d=destino_dd.value, c=compresion_dd.value, enc=encriptacion_dd.value, n=notificacion_dd.value, em=email_tf.value: confirmar_respaldo(ev, t, d, c, enc, n, em), bgcolor="#2A9D8F"),
-                ft.TextButton("Cancelar", on_click=lambda ev: (setattr(page, 'dialog', None), page.update())),
-            ],
-        )
-        page.dialog = dialog
-        page.dialog.open = True
-        page.update()
+        # Ejecutar simulación inmediatamente y regresar a la pantalla de respaldos
+        confirmar_respaldo(None, tipo_dd.value, destino_dd.value, compresion_dd.value, encriptacion_dd.value, notificacion_dd.value, email_tf.value)
 
     def confirmar_respaldo(_ev, tipo, destino, compresion, encriptacion, notificacion, email):
         # Cerrar confirm dialog
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
         # Simular ejecución
         detalle = f"Generando respaldo manual (simulado): {tipo}; destino={destino}; comp={compresion}; enc={encriptacion}; notif={notificacion}"
         if email:

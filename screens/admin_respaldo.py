@@ -83,13 +83,15 @@ def pantalla_admin_respaldo(page: ft.Page, mostrar_pantalla):
 
     def ConfirmRestore(_):
         mostrar_snack("Restauración iniciada (placeholder)", "#FFD54F")
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
             page.update()
 
     def CancelRestore(_):
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
             page.update()
 
     def OpenRestoreModal(backup_info: dict | None = None):
@@ -162,8 +164,9 @@ def pantalla_admin_respaldo(page: ft.Page, mostrar_pantalla):
     def RunManualBackup(_event, tipo_ctrl=None):
         tipo = tipo_ctrl.value if tipo_ctrl is not None else "-"
         mostrar_snack(f"Generando respaldo manual (simulado) - {tipo}")
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
             page.update()
 
     def OpenManualBackupModal(_):
@@ -202,13 +205,15 @@ def pantalla_admin_respaldo(page: ft.Page, mostrar_pantalla):
             mostrar_snack(f"Configuración guardada: {freq}, retención={retention}, tipo={default}")
         except Exception:
             mostrar_snack("Error guardando configuración", "#E63946")
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
             page.update()
 
     def BackToBackupScreen(_):
-        if page.dialog:
-            page.dialog.open = False
+        dlg = getattr(page, 'dialog', None)
+        if dlg:
+            dlg.open = False
             page.update()
 
     def OpenAutomationConfig(_):
