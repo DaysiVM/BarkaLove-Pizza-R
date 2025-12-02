@@ -118,6 +118,10 @@ def main(page: ft.Page):
             from screens.manuales_usuario import pantalla_manuales_usuario
             page.add(pantalla_manuales_usuario(page, mostrar_pantalla))
 
+        elif nombre == "videos_tutoriales":
+            from screens.videos_tutoriales import pantalla_videos_tutoriales
+            page.add(pantalla_videos_tutoriales(page, mostrar_pantalla))
+
         page.update()
 
     # Pantalla inicial
