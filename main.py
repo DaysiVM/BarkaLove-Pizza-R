@@ -98,6 +98,10 @@ def main(page: ft.Page):
             from screens.admin_respaldo import pantalla_admin_respaldo
             page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
 
+        elif nombre == "errores_kpi":
+            from screens.errores_kpi import pantalla_errores_kpi
+            page.add(pantalla_errores_kpi(page, mostrar_pantalla))
+
         elif nombre == "manual_backup":
             from screens.manual_backup import pantalla_manual_backup
             page.add(pantalla_manual_backup(page, mostrar_pantalla))

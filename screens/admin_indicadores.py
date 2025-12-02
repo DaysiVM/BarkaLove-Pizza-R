@@ -147,6 +147,7 @@ def pantalla_admin_indicadores(page: ft.Page, mostrar_pantalla):
                     border_radius=12,
                     width=200,
                     height=100,
+                    on_click=lambda e: mostrar_pantalla("errores_kpi"),
                 ),
                 ft.Container(width=12),
                 ft.Container(
