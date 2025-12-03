@@ -125,6 +125,25 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
         ),
     )
 
+    card_documentacion_tecnica = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Documentación técnica", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Abre el PDF de documentación técnica del sistema.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=VERDE, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("documentacion_tecnica")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
+
     card_videos_tutoriales = ft.Container(
         bgcolor="white",
         border_radius=12,
@@ -151,6 +170,7 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
             ft.Container(card_respaldo, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_manuales_usuario, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_videos_tutoriales, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_documentacion_tecnica, col={"xs": 12, "md": 6, "lg": 6}),
         ],
         columns=12,
         spacing=12,
