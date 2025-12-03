@@ -18,12 +18,12 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
     # Lista de videos (puedes añadir más aquí)
     videos = [
         {
-            "title": "BarkaLove Pizza  - Video tutorial para realizar pedido",
-            "url": "https://youtube.com/shorts/jg-nNGKYvBk?feature=share",
+            "title": "Canal: Barka-Love Pizza",
+            "url": "https://www.youtube.com/@Barka-LovePizza",
         },
         {
-            "title": "Canal: Barka Love - Ejemplo",
-            "url": "https://www.youtube.com/",
+            "title": "BarkaLove Pizza  - Video tutorial para realizar pedido",
+            "url": "https://youtube.com/shorts/8se_a3kwAWQ",
         },
     ]
 

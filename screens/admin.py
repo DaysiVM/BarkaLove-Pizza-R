@@ -87,6 +87,25 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
         ),
     )
 
+    card_reportes = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Reportes Históricos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Consulta ventas, gastos, inventario y daños.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=AZUL, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("reportes")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
+
     card_respaldo = ft.Container(
         bgcolor="white",
         border_radius=12,
@@ -167,6 +186,7 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
         controls=[
             ft.Container(card_recetas, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_kds, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_reportes, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_respaldo, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_manuales_usuario, col={"xs": 12, "md": 6, "lg": 6}),
             ft.Container(card_videos_tutoriales, col={"xs": 12, "md": 6, "lg": 6}),
