@@ -87,6 +87,7 @@ def main(page: ft.Page):
             page.add(pantalla_admin(page, mostrar_pantalla))
 
         elif nombre == "admin_recetas":
+            from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_recetas(page, mostrar_pantalla))
 
         elif nombre == "admin_indicadores":
@@ -154,9 +155,7 @@ def main(page: ft.Page):
 
         elif nombre == "admin_inventario":
             from screens.admin_inventario import pantalla_admin_inventario
-from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_inventario(page, mostrar_pantalla))
-
 
         page.update()
 
