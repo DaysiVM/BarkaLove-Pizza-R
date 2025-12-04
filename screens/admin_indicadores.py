@@ -215,4 +215,3 @@ def pantalla_admin_indicadores(page: ft.Page, mostrar_pantalla):
     layout = ft.Column([header, ft.Divider(), cuerpo], spacing=12)
     root = ft.Container(layout, padding=16, bgcolor=CREMA, expand=True)
     return root
-
