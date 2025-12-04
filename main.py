@@ -137,6 +137,11 @@ def main(page: ft.Page):
             from screens.videos_tutoriales import pantalla_videos_tutoriales
             page.add(pantalla_videos_tutoriales(page, mostrar_pantalla))
 
+        elif nombre == "admin_inventario":
+            from screens.admin_inventario import pantalla_admin_inventario
+            page.add(pantalla_admin_inventario(page, mostrar_pantalla))
+
+
         page.update()
 
     # Pantalla inicial

@@ -1,9 +1,10 @@
+# screens/videos_tutoriales.py
+from __future__ import annotations
 import flet as ft
-import webbrowser
-
 
 def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
     page.bgcolor = "#FFF8E7"
+    page.scroll = ft.ScrollMode.AUTO
     page.clean()
 
     # Seguridad: solo admin
@@ -18,7 +19,7 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
     # Lista de videos (puedes añadir más aquí)
     videos = [
         {
-            "title": "BarkaLove Pizza  - Video tutorial para realizar pedido",
+            "title": "BarkaLove Pizza - Video tutorial para realizar pedido",
             "url": "https://youtube.com/shorts/jg-nNGKYvBk?feature=share",
         },
         {
@@ -27,15 +28,30 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
         },
     ]
 
-    def abrir_video(url):
-        webbrowser.open(url)
+    def abrir_video(url: str):
+        # use flet helper para abrir url (mejor integración)
+        try:
+            ft.launch_url(url)
+        except Exception:
+            # fallback: intentar con webbrowser si ft.launch_url falla
+            try:
+                import webbrowser
+                webbrowser.open(url)
+            except Exception:
+                page.snack_bar = ft.SnackBar(ft.Text("No se pudo abrir el enlace.", color="white"), bgcolor="#E63946")
+                page.snack_bar.open = True
+                page.update()
 
     items = []
     for v in videos:
         row = ft.Row(
             [
                 ft.Text(v["title"], expand=True, size=16),
-                ft.IconButton(icon=ft.Icons.PLAY_ARROW, tooltip="Abrir en YouTube", on_click=lambda e, u=v["url"]: abrir_video(u)),
+                ft.IconButton(
+                    icon=ft.Icons.PLAY_ARROW,
+                    tooltip="Abrir en YouTube",
+                    on_click=lambda e, u=v["url"]: abrir_video(u)
+                ),
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
         )
@@ -50,4 +66,8 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
     )
 
     contenido = ft.Column([header, ft.Divider()] + items, spacing=10)
-    return ft.Container(contenido, padding=20)
+
+    cont = ft.Container(contenido, padding=20, expand=True, bgcolor="#FFF8E7")
+    page.add(cont)
+    page.update()
+    return cont

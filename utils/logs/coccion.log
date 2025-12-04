@@ -48,3 +48,4 @@
 [2025-11-13 09:04:23] ALERTA_SENSOR | Pedido #9980 | Falla sensor temperatura (sin lectura)
 [2025-11-13 09:06:23] COCCION FIN | {'pedido': 9980, 'tipo_pizza': 'Hawaiana', 'temp_objetivo': 280.0, 'tiempo_objetivo_min': 10.8, 'temp_final': 281.5, 'tiempo_real_min': 10.79, 'fallas': []}
 [2025-11-13 09:06:36] COCCION FIN | {'pedido': 9980, 'tipo_pizza': 'Hawaiana', 'temp_objetivo': 280.0, 'tiempo_objetivo_min': 10.8, 'temp_final': 280.7, 'tiempo_real_min': 10.79, 'fallas': ['sensor_temp_sin_lectura', 'sensor_temp_sin_lectura']}
+[2025-12-04 08:01:34] COCCION INICIO | Pedido #2246 | Tipo: Pepperoni | Obj 280.0°C, 10.8min | dur_seg=648

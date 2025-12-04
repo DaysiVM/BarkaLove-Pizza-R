@@ -1,8 +1,11 @@
-# screens/registro.py (registro SIN guía de receta; ingredientes con icono en su lugar + imagen por tipo + KDS)
+# screens/registro.py
+from __future__ import annotations
 import flet as ft
 import random
 from datetime import datetime
 import time
+import traceback
+from typing import List, Dict, Any, Optional
 
 from utils.pedidos import guardar_pedido, actualizar_pedido
 from utils.kds import registrar_pedido
@@ -10,17 +13,23 @@ import utils.recetas as rx  # se usa para guardar la version vigente en el pedid
 
 
 def pantalla_registro(
-    page,
+    page: ft.Page,
     masa,
     salsa,
     checkbox_ingredientes,
     ingredientes,
     mostrar_pantalla,
-    pedido_enviado_ref,
-    pedido_finalizado_ref,
-    current_order_ref,
-    editar_orden=None
+    pedido_enviado_ref: List[Any],
+    pedido_finalizado_ref: List[Any],
+    current_order_ref: List[Any],
+    editar_orden: Optional[int] = None
 ):
+    """
+    Pantalla de registro de pedido combinada y robusta.
+    Recibe controles inyectados (masa, salsa, checkbox_ingredientes, ingredientes)
+    y referencias mutables para comunicar estado con el router.
+    """
+
     # ====== Estilo base y helpers ======
     page.session.set("inicio_registro_ts", time.monotonic())
     page.scroll = ft.ScrollMode.AUTO
@@ -34,6 +43,7 @@ def pantalla_registro(
         return size, w, h
 
     state = {"field_w": 320, "pizza_size": 560, "cart_h": 420, "title_size": 32, "ing_img": 32, "pad": 16}
+
     def recompute_sizes():
         size, w, h = bp()
         if size == "lg":
@@ -45,6 +55,7 @@ def pantalla_registro(
         if h < 740:
             state["pizza_size"] = max(280, int(state["pizza_size"] * 0.9))
             state["cart_h"] = max(260, int(state["cart_h"] * 0.9))
+
     recompute_sizes()
 
     # ====== Campos de cliente ======
@@ -56,7 +67,7 @@ def pantalla_registro(
         text_size=16
     )
 
-    # Selectores (inyectados por router)
+    # Selectores (inyectados por router) — ajustarlos al ancho/estilo local
     masa.color = negro; masa.text_size = 16; masa.width = state["field_w"]
     salsa.color = negro; salsa.text_size = 16; salsa.width = state["field_w"]
 
@@ -79,14 +90,25 @@ def pantalla_registro(
 
     # ====== CANTIDAD ======
     cantidad_valor = ft.Text("1", size=18, color=negro)
+
     def incrementar(_):
-        v = int(cantidad_valor.value)
+        try:
+            v = int(cantidad_valor.value)
+        except Exception:
+            v = 1
         if v < 10:
-            cantidad_valor.value = str(v+1); page.update()
+            cantidad_valor.value = str(v + 1)
+            page.update()
+
     def decrementar(_):
-        v = int(cantidad_valor.value)
+        try:
+            v = int(cantidad_valor.value)
+        except Exception:
+            v = 1
         if v > 1:
-            cantidad_valor.value = str(v-1); page.update()
+            cantidad_valor.value = str(v - 1)
+            page.update()
+
     cantidad_row = ft.Row(
         [
             ft.Text("Cantidad:", color=negro, size=16, weight=ft.FontWeight.W_600),
@@ -104,7 +126,7 @@ def pantalla_registro(
         fit=ft.ImageFit.CONTAIN
     )
 
-    def imagen_por_tipo(tipo: str | None) -> str:
+    def imagen_por_tipo(tipo: Optional[str]) -> str:
         t = (tipo or "").lower()
         if "pepperoni" in t:
             return "Pepperoni-pizza.png"
@@ -119,14 +141,24 @@ def pantalla_registro(
 
     # ====== Alerta ======
     alert_text = ft.Text("", size=16, color=rojo, weight=ft.FontWeight.W_700, text_align=ft.TextAlign.CENTER)
-    def show_alert(msg): alert_text.value = msg; page.update()
+
+    def show_alert(msg: str):
+        alert_text.value = msg
+        page.update()
+
     def clear_alert(*_):
         if alert_text.value:
-            alert_text.value = ""; page.update()
-    for ctrl in [masa, salsa, tamano]: ctrl.on_change = clear_alert
+            alert_text.value = ""
+            page.update()
+
+    for ctrl in [masa, salsa, tamano]:
+        try:
+            ctrl.on_change = clear_alert
+        except Exception:
+            pass
 
     # ====== Carrito ======
-    carrito_items = []
+    carrito_items: List[Dict[str, Any]] = []
     carrito_list = ft.ListView(expand=True, spacing=6, padding=0, auto_scroll=False)
     carrito_header = ft.Text("Productos agregados", size=18, weight=ft.FontWeight.BOLD, color=negro)
     carrito_total  = ft.Text("Total de productos: 0", size=14, color=negro)
@@ -138,12 +170,14 @@ def pantalla_registro(
         on_change=clear_alert,
     )
 
-    def _total_unidades(): return sum(int(it.get("cantidad", 1)) for it in carrito_items)
+    def _total_unidades() -> int:
+        return sum(int(it.get("cantidad", 1)) for it in carrito_items)
 
-    def eliminar_item(idx):
+    def eliminar_item(idx: int):
         def _h(_):
             if 0 <= idx < len(carrito_items):
-                carrito_items.pop(idx); refresh_carrito()
+                carrito_items.pop(idx)
+                refresh_carrito()
         return _h
 
     def refresh_carrito():
@@ -153,7 +187,7 @@ def pantalla_registro(
             tipo = it.get("receta_tipo") or "N/D"
             resumen = (
                 f'{it["cantidad"]}× {t} — {it["masa"]} + {it["salsa"]} | '
-                f'{", ".join(it["ingredientes"]) if it["ingredientes"] else "Sin extras"}'
+                f'{", ".join(it["ingredientes"]) if it.get("ingredientes") else "Sin extras"}'
             )
             carrito_list.controls.append(
                 ft.Container(
@@ -194,7 +228,10 @@ def pantalla_registro(
         page.update()
 
     # ====== Tipo de pizza (receta) ======
-    tipos_receta = rx.listar_tipos()
+    try:
+        tipos_receta = rx.listar_tipos()
+    except Exception:
+        tipos_receta = []
     dd_receta = ft.Dropdown(
         label="Tipo de pizza (receta)",
         width=state["field_w"],
@@ -205,8 +242,12 @@ def pantalla_registro(
 
     # actualizar imagen por tipo
     def on_tipo_change(_=None):
-        pizza_imagen.src = imagen_por_tipo(dd_receta.value)
-        page.update()
+        try:
+            pizza_imagen.src = imagen_por_tipo(dd_receta.value)
+            page.update()
+        except Exception:
+            pass
+
     if dd_receta.options:
         dd_receta.on_change = on_tipo_change
     on_tipo_change()
@@ -222,7 +263,7 @@ def pantalla_registro(
             show_alert(f"Para agregar un producto falta: {', '.join(faltantes)}.")
             return
 
-        ingredientes_sel = [c.label for c in checkbox_ext if c.value]
+        ingredientes_sel = [c.label for c in checkbox_ext if getattr(c, "value", False)]
         carrito_items.append({
             "masa": masa.value,
             "salsa": salsa.value,
@@ -234,7 +275,8 @@ def pantalla_registro(
         refresh_carrito()
         clear_alert()
         page.snack_bar = ft.SnackBar(ft.Text("Producto agregado al carrito.", color="white"), bgcolor="#4CAF50")
-        page.snack_bar.open = True; page.update()
+        page.snack_bar.open = True
+        page.update()
 
     btn_agregar_producto = ft.ElevatedButton(
         "Agregar producto", bgcolor=azul, color="white", width=220, height=48,
@@ -244,9 +286,12 @@ def pantalla_registro(
     # ====== Confirmar / Cancelar ======
     def cancelar_pedido_click(_):
         if carrito_items:
-            carrito_items.clear(); refresh_carrito(); clear_alert()
+            carrito_items.clear()
+            refresh_carrito()
+            clear_alert()
             page.snack_bar = ft.SnackBar(ft.Text("Se vació el carrito de productos.", color="white"), bgcolor=rojo)
-            page.snack_bar.open = True; page.update()
+            page.snack_bar.open = True
+            page.update()
         else:
             show_alert("No hay productos en el carrito para borrar.")
 
@@ -255,26 +300,29 @@ def pantalla_registro(
         unidades = _total_unidades()
         first = items[0]
         receta_tipo = first.get("receta_tipo") or dd_receta.value
-        receta_vig = rx.vigente(receta_tipo) if receta_tipo else None
+        try:
+            receta_vig = rx.vigente(receta_tipo) if receta_tipo else None
+        except Exception:
+            receta_vig = None
         return {
             "orden": numero_orden,
             "cliente": nombre_cliente.value,
             "metodo_pago": metodo_pago.value,
             "items": items,
             "hora": datetime.now().isoformat(),
-            "masa": first["masa"],
-            "salsa": first["salsa"],
+            "masa": first.get("masa"),
+            "salsa": first.get("salsa"),
             "tamano": first.get("tamano"),
-            "ingredientes": first["ingredientes"],
-            "cantidad": first["cantidad"],
+            "ingredientes": first.get("ingredientes"),
+            "cantidad": first.get("cantidad"),
             "total_visual": unidades * 10,
             "moneda_visual": "USD",
             "receta_tipo": receta_tipo,
-            "receta_version": (receta_vig.version_id if receta_vig else None),
+            "receta_version": (getattr(receta_vig, "version_id", None) if receta_vig else None),
         }
 
-    def _enviar_a_kds(pedido_dict: dict):
-        """Registra el pedido confirmado en el KDS (HU: <5s)."""
+    def _enviar_a_kds(pedido_dict: Dict[str, Any]):
+        """Registra el pedido confirmado en el KDS (intento silencioso)."""
         first = pedido_dict["items"][0] if pedido_dict.get("items") else {}
         pedido_kds = {
             "id": pedido_dict.get("orden"),
@@ -286,21 +334,52 @@ def pantalla_registro(
             "salsa": pedido_dict.get("salsa") or first.get("salsa"),
             "ingredientes": pedido_dict.get("ingredientes") or first.get("ingredientes", []),
             "estado": "confirmado",
-            # 'fecha' la agrega utils.kds.registrar_pedido
         }
         try:
             registrar_pedido(pedido_kds)
-        except Exception:
-            pass
+        except Exception as ex:
+            # no interrumpimos el flujo por fallo en KDS
+            print(f"[WARN _enviar_a_kds] fallo registrar_pedido: {ex}")
+
+    def _normalize_guardar_response(resp) -> List[str]:
+        """
+        Acepta distintos retornos de guardar_pedido:
+        - lista -> alertas
+        - None/True -> []
+        - dict with 'alertas' key -> that
+        - False -> treat as error (raise)
+        """
+        if resp is None:
+            return []
+        if isinstance(resp, list):
+            return resp
+        if isinstance(resp, dict):
+            if "alertas" in resp:
+                return resp["alertas"] or []
+            if resp.get("ok") is True and "alertas" in resp:
+                return resp.get("alertas") or []
+            return []
+        if resp is True:
+            return []
+        if resp is False:
+            raise ValueError("guardar_pedido devolvió False")
+        return []
 
     def guardar_pedido_click(e):
-        if hasattr(e, "control"): e.control.disabled = True; page.update()
+        control_ref = getattr(e, "control", None)
+        if control_ref is not None:
+            control_ref.disabled = True
+            page.update()
         try:
+            # validaciones frontales
             if not nombre_cliente.value:
-                show_alert("Indica el nombre del cliente."); return
+                show_alert("Indica el nombre del cliente.")
+                return
             if not metodo_pago.value:
-                show_alert("Selecciona el método de pago."); return
+                show_alert("Selecciona el método de pago.")
+                return
 
+            # si carrito vacío, construir desde campos actuales
             if len(carrito_items) == 0:
                 falt = []
                 if not masa.value:   falt.append("tipo de masa")
@@ -310,7 +389,7 @@ def pantalla_registro(
                 if falt:
                     show_alert(f"Selecciona {', '.join(falt)} o agrega un producto al carrito.")
                     return
-                ingredientes_sel = [c.label for c in checkbox_ext if c.value]
+                ingredientes_sel = [c.label for c in checkbox_ext if getattr(c, "value", False)]
                 carrito_items.append({
                     "masa": masa.value, "salsa": salsa.value, "tamano": tamano.value,
                     "ingredientes": ingredientes_sel, "cantidad": int(cantidad_valor.value),
@@ -321,40 +400,121 @@ def pantalla_registro(
             if editar_orden is None:
                 numero_orden = random.randint(1000, 9999)
                 pedido = _armar_pedido_base(numero_orden=numero_orden)
-                guardar_pedido(pedido)
 
-                # === Registro automático en cocina (KDS) ===
-                _enviar_a_kds(pedido)
+                try:
+                    # llamar guardar_pedido — puede lanzar ValueError si hay faltantes
+                    resp = guardar_pedido(pedido)
+                    alertas = _normalize_guardar_response(resp)
+                except ValueError as ve:
+                    # stock insuficiente o validation desde backend
+                    msg = str(ve) or "Stock insuficiente."
+                    print(f"[INFO guardar_pedido_click] ValueError: {msg}")
+                    dlg = ft.AlertDialog(
+                        title=ft.Text("No hay suficiente stock"),
+                        content=ft.Text(msg),
+                        actions=[ft.TextButton("OK", on_click=lambda ev: (setattr(page, 'dialog', None), page.update()))],
+                    )
+                    page.dialog = dlg
+                    dlg.open = True
+                    page.update()
+                    return
+                except Exception as ex:
+                    # excepción inesperada: mostrar dialog y log en consola
+                    print("[ERROR guardar_pedido_click] excepción al guardar pedido:", ex)
+                    traceback.print_exc()
+                    dlg = ft.AlertDialog(
+                        title=ft.Text("Error al guardar pedido"),
+                        content=ft.Text(f"Ocurrió un error inesperado: {ex}"),
+                        actions=[ft.TextButton("OK", on_click=lambda ev: (setattr(page, 'dialog', None), page.update()))],
+                    )
+                    page.dialog = dlg
+                    dlg.open = True
+                    page.update()
+                    return
 
+                # alertas de stock bajo si existen
+                if alertas:
+                    contenido = ft.Column([ft.Text("Se guardó la orden, pero se detectó baja de stock en:")] +
+                                        [ft.Text(f"- {a}") for a in alertas], tight=True)
+                    dlg_low = ft.AlertDialog(
+                        title=ft.Text("Advertencia de stock"),
+                        content=contenido,
+                        actions=[ft.TextButton("OK", on_click=lambda ev: (setattr(page, 'dialog', None), page.update()))],
+                    )
+                    page.dialog = dlg_low
+                    dlg_low.open = True
+                    page.update()
+
+                # enviar a KDS (intento silencioso)
+                try:
+                    _enviar_a_kds(pedido)
+                except Exception as ex:
+                    print(f"[WARN guardar_pedido_click] fallo registrar_pedido: {ex}")
+
+                # acciones UI tras guardar
                 pedido_enviado_ref[0] = True
                 pedido_finalizado_ref[0] = False
                 current_order_ref[0] = numero_orden
+                carrito_items.clear()
+                refresh_carrito()
                 clear_alert()
                 page.snack_bar = ft.SnackBar(
-                    ft.Text(f"Pedido #{numero_orden} registrado con {len(carrito_items)} producto(s).", color="white"),
+                    ft.Text(f"Pedido #{numero_orden} registrado con éxito.", color="white"),
                     bgcolor="#4CAF50",
                 )
-                page.snack_bar.open = True; page.update()
-                mostrar_pantalla("preparar", numero_orden=numero_orden)
+                page.snack_bar.open = True
+                page.update()
+
+                # navegar a preparar
+                try:
+                    mostrar_pantalla("preparar", numero_orden=numero_orden)
+                except Exception as ex:
+                    print(f"[ERROR guardar_pedido_click] error al navegar a preparar: {ex}")
+                    dlg = ft.AlertDialog(
+                        title=ft.Text("Error de navegación"),
+                        content=ft.Text(f"No se pudo ir a la pantalla preparar: {ex}"),
+                        actions=[ft.TextButton("OK", on_click=lambda ev: (setattr(page, 'dialog', None), page.update()))],
+                    )
+                    page.dialog = dlg
+                    dlg.open = True
+                    page.update()
+
             else:
+                # edición: no reasignamos inventario para evitar doble descontado
                 items_final = carrito_items or [{
                     "masa": masa.value, "salsa": salsa.value, "tamano": tamano.value,
-                    "ingredientes": [c.label for c in checkbox_ext if c.value],
+                    "ingredientes": [c.label for c in checkbox_ext if getattr(c, "value", False)],
                     "cantidad": int(cantidad_valor.value),
                     "receta_tipo": dd_receta.value,
                 }]
                 pedido = _armar_pedido_base(numero_orden=editar_orden, items=items_final)
-                actualizar_pedido(pedido)
-                clear_alert()
-                page.snack_bar = ft.SnackBar(ft.Text("Pedido actualizado correctamente.", color="white"), bgcolor="#4CAF50")
-                page.snack_bar.open = True; page.update()
-                mostrar_pantalla("inicio")
+                try:
+                    actualizar_pedido(pedido)
+                    clear_alert()
+                    page.snack_bar = ft.SnackBar(ft.Text("Pedido actualizado correctamente.", color="white"), bgcolor="#4CAF50")
+                    page.snack_bar.open = True
+                    page.update()
+                    mostrar_pantalla("inicio")
+                except Exception as ex:
+                    print(f"[ERROR guardar_pedido_click editar] {ex}")
+                    dlg = ft.AlertDialog(
+                        title=ft.Text("Error"),
+                        content=ft.Text(f"No se pudo actualizar el pedido: {ex}"),
+                        actions=[ft.TextButton("OK", on_click=lambda ev: (setattr(page, 'dialog', None), page.update()))],
+                    )
+                    page.dialog = dlg
+                    dlg.open = True
+                    page.update()
 
         except Exception as ex:
             page.snack_bar = ft.SnackBar(ft.Text(f"Error al registrar pedido: {ex}", color="white"), bgcolor=rojo)
-            page.snack_bar.open = True; page.update()
+            page.snack_bar.open = True
+            page.update()
+            traceback.print_exc()
         finally:
-            if hasattr(e, "control"): e.control.disabled = False; page.update()
+            if control_ref is not None:
+                control_ref.disabled = False
+            page.update()
 
     btn_confirmar_derecha = ft.ElevatedButton(
         "Confirmar pedido", bgcolor=amarillo, color=negro, width=state["field_w"], height=50,
@@ -430,9 +590,13 @@ def pantalla_registro(
         recompute_sizes()
         fw = state["field_w"]
         for ctrl in [nombre_cliente, dd_receta, masa, salsa, tamano, metodo_pago]:
-            ctrl.width = fw
+            try:
+                ctrl.width = fw
+            except Exception:
+                pass
         pizza_imagen.width = state["pizza_size"]; pizza_imagen.height = state["pizza_size"]
         page.update()
+
     page.on_resize = on_resize
 
     return root

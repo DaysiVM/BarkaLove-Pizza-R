@@ -391,6 +391,8 @@ def pantalla_admin_recetas(page: ft.Page, mostrar_pantalla):
         content=ft.Column([header, ft.Divider(color=NEGRO), top_tipo, filtros, grid], spacing=12),
         padding=16, bgcolor=CREMA, expand=True
     )
+    page.add(root)
+    page.update()
 
     # primer render + listeners
     refresh_versions()

@@ -44,18 +44,352 @@
     "fecha": "2025-10-23 13:23:42"
   },
   {
-    "id": 7540,
-    "orden": 7540,
-    "cliente": "Daysi",
+    "id": 7567,
+    "orden": 7567,
+    "cliente": "Jesus",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Gruesa",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra",
+      "Champiñones",
+      "Jamón",
+      "Piña"
+    ],
+    "estado": "Listo",
+    "fecha": "2025-10-23 13:34:37"
+  },
+  {
+    "id": 4500,
+    "orden": 4500,
+    "cliente": "asd",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "confirmado",
+    "fecha": "2025-12-03 13:08:43"
+  },
+  {
+    "id": 2718,
+    "orden": 2718,
+    "cliente": "asd",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "confirmado",
+    "fecha": "2025-12-03 13:14:22"
+  },
+  {
+    "id": 3695,
+    "orden": 3695,
+    "cliente": "123",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparacion",
+    "fecha": "2025-12-03 13:33:09"
+  },
+  {
+    "id": 1571,
+    "orden": 1571,
+    "cliente": "Juan",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Gruesa",
+    "salsa": "BBQ",
+    "ingredientes": [],
+    "estado": "Preparacion",
+    "fecha": "2025-12-03 13:40:20"
+  },
+  {
+    "id": 8093,
+    "orden": 8093,
+    "cliente": "asda",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Listo",
+    "fecha": "2025-12-03 13:49:41"
+  },
+  {
+    "id": 2001,
+    "orden": 2001,
+    "cliente": "asda",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "confirmado",
+    "fecha": "2025-12-03 14:01:25"
+  },
+  {
+    "id": 8340,
+    "orden": 8340,
+    "cliente": "asdagas",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "Horno",
+    "fecha": "2025-12-03 14:02:25"
+  },
+  {
+    "id": 7831,
+    "orden": 7831,
+    "cliente": "skvsdsd",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:08:10"
+  },
+  {
+    "id": 4800,
+    "orden": 4800,
+    "cliente": "jhkk",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:14:51"
+  },
+  {
+    "id": 4116,
+    "orden": 4116,
+    "cliente": "asdad",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:19:20"
+  },
+  {
+    "id": 3059,
+    "orden": 3059,
+    "cliente": "asdad",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:23:58"
+  },
+  {
+    "id": 5670,
+    "orden": 5670,
+    "cliente": "asd",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:29:07"
+  },
+  {
+    "id": 7455,
+    "orden": 7455,
+    "cliente": "yuiyouhijo",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:35:06"
+  },
+  {
+    "id": 6251,
+    "orden": 6251,
+    "cliente": "egtrg",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:41:29"
+  },
+  {
+    "id": 6614,
+    "orden": 6614,
+    "cliente": "fghg",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Preparación",
+    "fecha": "2025-12-03 14:46:16"
+  },
+  {
+    "id": 3925,
+    "orden": 3925,
+    "cliente": "rtru",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Horno",
+    "fecha": "2025-12-03 14:48:34"
+  },
+  {
+    "id": 7642,
+    "orden": 7642,
+    "cliente": "dfrvg",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Listo",
+    "fecha": "2025-12-03 14:55:30"
+  },
+  {
+    "id": 9131,
+    "orden": 9131,
+    "cliente": "jkk",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Listo",
+    "fecha": "2025-12-03 15:01:26"
+  },
+  {
+    "id": 3264,
+    "orden": 3264,
+    "cliente": "Prueba1",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Listo",
+    "fecha": "2025-12-03 17:24:33"
+  },
+  {
+    "id": 9749,
+    "orden": 9749,
+    "cliente": "Prueba3",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Listo",
+    "fecha": "2025-12-03 17:41:11"
+  },
+  {
+    "id": 3956,
+    "orden": 3956,
+    "cliente": "Prueba5",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "confirmado",
+    "fecha": "2025-12-03 17:44:44"
+  },
+  {
+    "id": 1475,
+    "orden": 1475,
+    "cliente": "ddf",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Horno",
+    "fecha": "2025-12-03 17:45:53"
+  },
+  {
+    "id": 6488,
+    "orden": 6488,
+    "cliente": "asdasd",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [
+      "Queso extra"
+    ],
+    "estado": "Empaque",
+    "fecha": "2025-12-03 17:49:39"
+  },
+  {
+    "id": 1766,
+    "orden": 1766,
+    "cliente": "xcv",
+    "receta_tipo": "Hawaiana",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Horno",
+    "fecha": "2025-12-03 17:55:05"
+  },
+  {
+    "id": 5845,
+    "orden": 5845,
+    "cliente": "xvzv",
     "receta_tipo": "Pepperoni",
     "tamano": "Individual",
     "masa": "Delgada",
     "salsa": "Tomate",
     "ingredientes": [
-      "Queso extra",
-      "Champiñones"
+      "Queso extra"
     ],
     "estado": "Horno",
-    "fecha": "2025-11-10 21:23:36"
+    "fecha": "2025-12-03 19:15:11"
+  },
+  {
+    "id": 4274,
+    "orden": 4274,
+    "cliente": "vxh",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Horno",
+    "fecha": "2025-12-03 19:25:05"
+  },
+  {
+    "id": 5480,
+    "orden": 5480,
+    "cliente": "fghdf",
+    "receta_tipo": "Jamon",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Listo",
+    "fecha": "2025-12-03 22:15:01"
   }
 ]

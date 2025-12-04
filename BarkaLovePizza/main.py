@@ -90,9 +90,57 @@ def main(page: ft.Page):
             from screens.admin_recetas import pantalla_admin_recetas
             page.add(pantalla_admin_recetas(page, mostrar_pantalla))
 
+        elif nombre == "admin_indicadores":
+            from screens.admin_indicadores import pantalla_admin_indicadores
+            page.add(pantalla_admin_indicadores(page, mostrar_pantalla))
+
+        elif nombre == "admin_respaldo":
+            from screens.admin_respaldo import pantalla_admin_respaldo
+            page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
+
+        elif nombre == "errores_kpi":
+            from screens.errores_kpi import pantalla_errores_kpi
+            page.add(pantalla_errores_kpi(page, mostrar_pantalla))
+
+        elif nombre == "manual_backup":
+            from screens.manual_backup import pantalla_manual_backup
+            page.add(pantalla_manual_backup(page, mostrar_pantalla))
+
+        elif nombre == "respaldo_detalle":
+            from screens.respaldo_detalle import pantalla_respaldo_detalle
+            page.add(pantalla_respaldo_detalle(page, kwargs.get("backup"), mostrar_pantalla))
+
+        elif nombre == "respaldo_proceso":
+            from screens.respaldo_proceso import pantalla_respaldo_proceso
+            page.add(pantalla_respaldo_proceso(page, mostrar_pantalla))
+
+        elif nombre == "automation_config":
+            from screens.automation_config import pantalla_automation_config
+            page.add(pantalla_automation_config(page, mostrar_pantalla))
+
+        elif nombre == "programar_mantenimiento":
+            from screens.programar_mantenimiento import pantalla_programar_mantenimiento
+            page.add(pantalla_programar_mantenimiento(page, mostrar_pantalla, title=kwargs.get("title")))
+        elif nombre == "programar_mantenimiento_confirm":
+            from screens.programar_mantenimiento import pantalla_programar_mantenimiento_confirm
+            page.add(pantalla_programar_mantenimiento_confirm(page, mostrar_pantalla, title=kwargs.get("title"), date=kwargs.get("date"), time=kwargs.get("time")))
+
         elif nombre == "kds":
             from screens.kds import pantalla_kds
             page.add(pantalla_kds(page, mostrar_pantalla))
+
+        elif nombre == "manuales_usuario":
+            from screens.manuales_usuario import pantalla_manuales_usuario
+            page.add(pantalla_manuales_usuario(page, mostrar_pantalla))
+
+        elif nombre == "videos_tutoriales":
+            from screens.videos_tutoriales import pantalla_videos_tutoriales
+            page.add(pantalla_videos_tutoriales(page, mostrar_pantalla))
+
+        elif nombre == "admin_inventario":
+            from screens.admin_inventario import pantalla_admin_inventario
+            page.add(pantalla_admin_inventario(page, mostrar_pantalla))
+
 
         page.update()
 

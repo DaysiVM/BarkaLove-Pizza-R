@@ -26,7 +26,7 @@
         "ingredientes": [
             "Queso extra",
             "Pepperoni",
-            "Champi\u00f1ones"
+            "Champiñones"
         ],
         "hora": "2025-10-21T11:15:00.511994"
     },
@@ -47,7 +47,7 @@
         "ingredientes": [
             "Queso extra",
             "Pepperoni",
-            "Champi\u00f1ones"
+            "Champiñones"
         ],
         "hora": "2025-10-21T11:49:09.123117"
     },
@@ -56,7 +56,7 @@
         "masa": "Gruesa",
         "salsa": "BBQ",
         "ingredientes": [
-            "Champi\u00f1ones",
+            "Champiñones",
             "Aceitunas"
         ],
         "hora": "2025-10-21T11:53:45.194655"
@@ -67,7 +67,7 @@
         "salsa": "BBQ",
         "ingredientes": [
             "Pepperoni",
-            "Champi\u00f1ones",
+            "Champiñones",
             "Aceitunas"
         ],
         "hora": "2025-10-21T11:54:50.333309"
@@ -89,7 +89,7 @@
         "ingredientes": [
             "Queso extra",
             "Pepperoni",
-            "Champi\u00f1ones"
+            "Champiñones"
         ],
         "hora": "2025-10-21T12:13:17.022155"
     },
@@ -100,7 +100,7 @@
         "ingredientes": [
             "Queso extra",
             "Pepperoni",
-            "Champi\u00f1ones"
+            "Champiñones"
         ],
         "hora": "2025-10-21T12:13:57.716881"
     },
@@ -111,7 +111,7 @@
         "ingredientes": [
             "Queso extra",
             "Pepperoni",
-            "Champi\u00f1ones"
+            "Champiñones"
         ],
         "hora": "2025-10-21T12:24:45.979902"
     },
@@ -122,7 +122,7 @@
         "ingredientes": [
             "Queso extra",
             "Pepperoni",
-            "Champi\u00f1ones"
+            "Champiñones"
         ],
         "hora": "2025-10-21T12:31:20.788571"
     },
@@ -157,7 +157,7 @@
                 "tamano": "Individual",
                 "ingredientes": [
                     "Queso extra",
-                    "Pi\u00f1a"
+                    "Piña"
                 ],
                 "cantidad": 1
             }
@@ -168,12 +168,37 @@
         "tamano": "Individual",
         "ingredientes": [
             "Queso extra",
-            "Pi\u00f1a"
+            "Piña"
         ],
         "cantidad": 1,
         "total_visual": 10,
         "moneda_visual": "USD",
         "receta_tipo": "Hawaiana",
+        "receta_version": "v1.0.0"
+    },
+    {
+        "orden": 2246,
+        "cliente": "ghnjtn",
+        "metodo_pago": "Efectivo",
+        "items": [
+            {
+                "masa": "Delgada",
+                "salsa": "Tomate",
+                "tamano": "Individual",
+                "ingredientes": [],
+                "cantidad": 1,
+                "receta_tipo": "Pepperoni"
+            }
+        ],
+        "hora": "2025-12-04T08:01:14.323972",
+        "masa": "Delgada",
+        "salsa": "Tomate",
+        "tamano": "Individual",
+        "ingredientes": [],
+        "cantidad": 1,
+        "total_visual": 10,
+        "moneda_visual": "USD",
+        "receta_tipo": "Pepperoni",
         "receta_version": "v1.0.0"
     }
 ]

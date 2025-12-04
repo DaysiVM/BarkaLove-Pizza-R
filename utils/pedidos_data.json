@@ -101,5 +101,17 @@
     ],
     "estado": "Listo",
     "fecha": "2025-11-13 08:55:03"
+  },
+  {
+    "id": 2246,
+    "orden": 2246,
+    "cliente": "ghnjtn",
+    "receta_tipo": "Pepperoni",
+    "tamano": "Individual",
+    "masa": "Delgada",
+    "salsa": "Tomate",
+    "ingredientes": [],
+    "estado": "Horno",
+    "fecha": "2025-12-04 08:01:14"
   }
 ]

@@ -24,7 +24,7 @@
           "tiempo": 1
         }
       },
-      "activo": true
+      "activo": false
     },
     {
       "tipo_pizza": "Pepperoni",
@@ -85,6 +85,60 @@
         }
       },
       "activo": false
+    },
+    {
+      "tipo_pizza": "Pepperoni",
+      "version_id": "1.0.1",
+      "autor": "admin",
+      "fecha": "2025-12-03 21:21:02",
+      "notas": "",
+      "ingredientes": {
+        "Masa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Salsa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 0,
+        "tiempo_min": 1,
+        "tol": {
+          "temp": 0,
+          "tiempo": 0
+        }
+      },
+      "activo": true
     }
   ],
   "Hawaiana": [
@@ -130,6 +184,60 @@
         "tol": {
           "temp": 5,
           "tiempo": 1
+        }
+      },
+      "activo": false
+    },
+    {
+      "tipo_pizza": "Hawaiana",
+      "version_id": "1.0.1",
+      "autor": "admin",
+      "fecha": "2025-12-03 21:21:13",
+      "notas": "",
+      "ingredientes": {
+        "Masa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Salsa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 0,
+        "tiempo_min": 1,
+        "tol": {
+          "temp": 0,
+          "tiempo": 0
         }
       },
       "activo": true
@@ -294,6 +402,62 @@
         "tol": {
           "temp": 0,
           "tiempo": 0
+        }
+      },
+      "activo": true
+    }
+  ],
+  "Suprema": [
+    {
+      "tipo_pizza": "Suprema",
+      "version_id": "v1.0.0",
+      "autor": "admin",
+      "fecha": "2025-12-03 21:20:20",
+      "notas": "Versión inicial",
+      "ingredientes": {
+        "Masa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Salsa": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Queso extra": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pepperoni": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Champiñones": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Aceitunas": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Pimientos": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Jamón": {
+          "gramos": 0,
+          "tol": 0
+        },
+        "Piña": {
+          "gramos": 0,
+          "tol": 0
+        }
+      },
+      "horno": {
+        "temp_c": 280,
+        "tiempo_min": 12,
+        "tol": {
+          "temp": 5,
+          "tiempo": 1
         }
       },
       "activo": true
