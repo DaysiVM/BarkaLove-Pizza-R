@@ -2,7 +2,6 @@
 from __future__ import annotations
 import flet as ft
 import asyncio
-import threading
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 
@@ -23,7 +22,7 @@ try:
 except Exception:
     rx = None
 
-# pantallas hijas (opcional)
+# pantallas hijas
 try:
     import screens.manuales_usuario as mu
 except Exception:
@@ -114,102 +113,20 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
     last_update_txt = ft.Text("Última actualización: —", size=12, color=GRIS)
     low_stock_txt = ft.Text("", size=12, color=ROJO)
 
-    card_reportes = ft.Container(
-        bgcolor="white",
-        border_radius=12,
-        padding=16,
-        content=ft.Column(
-            [
-                ft.Text("Reportes Históricos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
-                ft.Text("Consulta ventas, gastos, inventario y daños.", size=14, color=GRIS),
-                ft.Container(height=8),
-                ft.ElevatedButton(
-                    "Abrir",
-                    bgcolor=AZUL, color="white", height=40,
-                    on_click=lambda _: mostrar_pantalla("reportes")
-                ),
-            ],
-            spacing=6,
-        ),
-    )
-
-    card_comparacion = ft.Container(
-        bgcolor="white",
-        border_radius=12,
-        padding=16,
-        content=ft.Column(
-            [
-                ft.Text("Comparación consumos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
-                ft.Text("Compara consumo entre turnos por rango de fechas.", size=14, color=GRIS),
-                ft.Container(height=8),
-                ft.ElevatedButton(
-                    "Abrir",
-                    bgcolor=AZUL, color="white", height=40,
-                    on_click=lambda _: mostrar_pantalla("comparacion_consumos")
-                ),
-            ],
-            spacing=6,
-        ),
-    )
-
-    card_respaldo = ft.Container(
-        bgcolor="white",
-        border_radius=12,
-        padding=16,
-        content=ft.Column(
-            [
-                ft.Text("Respaldo de datos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
-                ft.Text("Gestiona copias de seguridad: crear, restaurar y descargar.", size=14, color=GRIS),
-                ft.Container(height=8),
-                ft.ElevatedButton(
-                    "Abrir",
-                    bgcolor=VERDE, color="white", height=40,
-                    on_click=lambda _: mostrar_pantalla("admin_respaldo")
-                ),
-            ],
-            spacing=6,
-        ),
-    )
+    spark_ventas = ft.Text("", size=16, color=AZUL)
+    spark_produ = ft.Text("", size=16, color=VERDE)
+    spark_costos = ft.Text("", size=16, color=ROJO)
 
     btn_refresh = ft.ElevatedButton("Actualizar ahora", icon=ft.Icons.REFRESH, bgcolor=AZUL, color="white", height=36)
     toggle_autorefresh = ft.Switch(label="Auto-refresh", value=True)
 
-    card_documentacion_tecnica = ft.Container(
-        bgcolor="white",
-        border_radius=12,
-        padding=16,
-        content=ft.Column(
-            [
-                ft.Text("Documentación técnica", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
-                ft.Text("Abre el PDF de documentación técnica del sistema.", size=14, color=GRIS),
-                ft.Container(height=8),
-                ft.ElevatedButton(
-                    "Abrir",
-                    bgcolor=VERDE, color="white", height=40,
-                    on_click=lambda _: mostrar_pantalla("documentacion_tecnica")
-                ),
-            ],
-            spacing=6,
-        ),
+    card_ventas = ft.Container(
+        bgcolor="white", border_radius=12, padding=12,
+        content=ft.Column([ft.Text("Ventas (USD)", size=12, color=GRIS), ventas_lbl, spark_ventas], spacing=6)
     )
-
-    card_videos_tutoriales = ft.Container(
-        bgcolor="white",
-        border_radius=12,
-        padding=16,
-        content=ft.Column(
-            [
-                ft.Text("Videos tutoriales", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
-                ft.Text("Accede a videos de apoyo y tutoriales en YouTube.", size=14, color=GRIS),
-                ft.Container(height=8),
-                ft.ElevatedButton(
-                    "Abrir",
-                    bgcolor=AZUL, color="white", height=40,
-                    on_click=lambda _: mostrar_pantalla("videos_tutoriales")
-                ),
-            ],
-            spacing=6,
-        ),
+    card_produ = ft.Container(
+        bgcolor="white", border_radius=12, padding=12,
+        content=ft.Column([ft.Text("Producción (u)", size=12, color=GRIS), produ_lbl, spark_produ], spacing=6)
     )
     card_costos = ft.Container(
         bgcolor="white", border_radius=12, padding=12,
@@ -218,16 +135,12 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
 
     kpi_row = ft.Row([card_ventas, card_produ, card_costos], spacing=12, alignment=ft.MainAxisAlignment.SPACE_EVENLY)
 
-    grid = ft.ResponsiveRow(
-        controls=[
-            ft.Container(card_recetas, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_kds, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_reportes, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_comparacion, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_respaldo, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_manuales_usuario, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_videos_tutoriales, col={"xs": 12, "md": 6, "lg": 6}),
-            ft.Container(card_documentacion_tecnica, col={"xs": 12, "md": 6, "lg": 6}),
+    dashboard_header = ft.Row(
+        [
+            ft.Text("📈 Dashboard (tiempo real)", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+            ft.Container(expand=True),
+            toggle_autorefresh,
+            btn_refresh,
         ],
         vertical_alignment=ft.CrossAxisAlignment.CENTER,
     )
@@ -239,13 +152,11 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
     )
 
     # ---------------- Cards (funciones) ----------------
-    # Nota: el botón "Abrir" se unifica a color AZUL en todas las tarjetas
-    def _card(title: str, desc: str, key: str, disabled: bool = False):
+    def _card(title: str, desc: str, color: str, key: str, disabled: bool = False):
         btn = ft.ElevatedButton(
             "Abrir",
-            bgcolor=AZUL, color="white", height=40,
+            bgcolor=color, color="white", height=40,
             on_click=(lambda _: mostrar_pantalla(key)) if not disabled else None,
-            style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
         )
         if disabled:
             btn.disabled = True
@@ -254,7 +165,6 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
             bgcolor="white",
             border_radius=12,
             padding=16,
-            width=320,
             content=ft.Column(
                 [
                     ft.Text(title, size=18, weight=ft.FontWeight.W_600, color=NEGRO),
@@ -263,27 +173,88 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
                     btn,
                 ],
                 spacing=6,
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             ),
         )
 
-    cards = [
-        _card("Recetas estandarizadas", "Administra versiones, activa receta vigente y revisa historial.", "admin_recetas"),
-        _card("KDS (Cocina)", "Visualiza pedidos confirmados y marca como listos.", "kds", disabled=not is_admin),
-        _card("Inventario de ingredientes", "Gestiona cantidades, ajusta stock y revisa alertas cuando el mínimo está alcanzado.", "admin_inventario", disabled=not is_admin),
-        _card("Respaldo de datos", "Gestiona copias de seguridad: crear, restaurar y descargar.", "admin_respaldo", disabled=not is_admin),
-        _card("Indicadores", "Productividad, tiempos y errores", "admin_indicadores", disabled=not is_admin),
-        _card("Manuales de Usuario", "Visualiza y abre manuales de usuario en formato PDF.", "manuales_usuario"),
-        _card("Videos tutoriales", "Accede a videos de apoyo y tutoriales en YouTube.", "videos_tutoriales"),
-    ]
+    card_recetas = _card(
+        "Recetas estandarizadas",
+        "Administra versiones, activa receta vigente y revisa historial.",
+        AMARILLO,
+        "admin_recetas",
+        disabled=not is_admin
+    )
 
-    # Construimos filas de 2 en 2 y las centramos
-    card_rows: List[ft.Control] = []
-    for i in range(0, len(cards), 2):
-        left = cards[i]
-        right = cards[i+1] if (i+1) < len(cards) else ft.Container(width=320)  # placeholder si impar
-        row = ft.Row([left, right], alignment=ft.MainAxisAlignment.CENTER, spacing=24)
-        card_rows.append(row)
+    card_kds = _card(
+        "KDS (Cocina)",
+        "Visualiza pedidos confirmados y marca como listos.",
+        AZUL,
+        "kds",
+        disabled=not is_admin
+    )
+
+    card_inventario = _card(
+        "Inventario de ingredientes",
+        "Gestiona cantidades, ajusta stock y revisa alertas cuando el mínimo está alcanzado.",
+        VERDE,
+        "admin_inventario",
+        disabled=not is_admin
+    )
+
+    card_respaldo = _card(
+        "Respaldo de datos",
+        "Gestiona copias de seguridad: crear, restaurar y descargar.",
+        VERDE,
+        "admin_respaldo",
+        disabled=not is_admin
+    )
+
+    card_indicadores = _card(
+        "Indicadores",
+        "Productividad, tiempos y errores",
+        AZUL,
+        "admin_indicadores",
+        disabled=not is_admin
+    )
+
+    card_actualizaciones = _card(
+        "Actualizaciones",
+        "Proceso de actualización remoto",
+        AMARILLO,
+        "admin_actualizaciones",
+        disabled=False
+    )
+
+    card_manuales_usuario = _card(
+        "Manuales de Usuario",
+        "Visualiza y abre manuales de usuario en formato PDF.",
+        VERDE,
+        "manuales_usuario",
+        disabled=False
+    )
+
+    card_videos_tutoriales = _card(
+        "Videos tutoriales",
+        "Accede a videos de apoyo y tutoriales en YouTube.",
+        AZUL,
+        "videos_tutoriales",
+        disabled=False
+    )
+
+    grid_cards = ft.ResponsiveRow(
+        controls=[
+            ft.Container(card_recetas, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_kds, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_inventario, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_respaldo, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_indicadores, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_actualizaciones, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_manuales_usuario, col={"xs": 12, "md": 6, "lg": 4}),
+            ft.Container(card_videos_tutoriales, col={"xs": 12, "md": 6, "lg": 4}),
+        ],
+        columns=12,
+        spacing=12,
+        run_spacing=12,
+    )
 
     # ---------------- Dashboard logic ----------------
     stop_flag = {"stop": False}
@@ -397,7 +368,30 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
                     pass
 
     # ---------------- Layout & montaje ----------------
-    # Combina dashboard + filas de tarjetas (2 en 2 centradas)
+    layout = ft.Column(
+        [
+            header,
+            ft.Divider(),
+            dashboard_box,
+            ft.Divider(),
+            grid_cards
+        ],
+        spacing=12,
+        expand=True,
+    )
+
+    root = ft.Container(layout, padding=16, bgcolor=CREMA, expand=True)
+    page.add(root)
+
+    # primera pintada y refresco background
+    _render_metrics()
+    try:
+        asyncio.create_task(_auto_refresher())
+    except RuntimeError:
+        pass
+
+    # Nota: para detener el refresco desde fuera, setear stop_flag["stop"] = True
+    return root
     layout_children = [header, ft.Divider(), dashboard_box, ft.Divider()]
     layout_children.extend(card_rows)
 

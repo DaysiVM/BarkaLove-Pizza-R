@@ -98,6 +98,10 @@ def main(page: ft.Page):
             from screens.admin_respaldo import pantalla_admin_respaldo
             page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
 
+        elif nombre == "admin_actualizaciones":
+            from screens.admin_actualizaciones import pantalla_admin_actualizaciones
+            page.add(pantalla_admin_actualizaciones(page, mostrar_pantalla))
+
         elif nombre == "comparacion_consumos":
             from screens.comparacion_consumos import pantalla_comparacion_consumos
             page.add(pantalla_comparacion_consumos(page, mostrar_pantalla))

@@ -1,7 +1,7 @@
 [
   {
     "ingrediente": "Masa",
-    "cantidad_actual": 50,
+    "cantidad_actual": 55,
     "stock_minimo": 5,
     "unidad": "unidades"
   },
@@ -25,7 +25,7 @@
   },
   {
     "ingrediente": "Pepperoni",
-    "cantidad_actual": 45,
+    "cantidad_actual": 48,
     "stock_minimo": 6,
     "unidad": "porciones"
   },
@@ -58,5 +58,11 @@
     "cantidad_actual": 40,
     "stock_minimo": 5,
     "unidad": "porciones"
+  },
+  {
+    "ingrediente": "Ranchitas",
+    "cantidad_actual": 20,
+    "stock_minimo": 5,
+    "unidad": "paquetitos "
   }
 ]
