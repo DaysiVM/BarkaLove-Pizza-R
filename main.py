@@ -94,6 +94,10 @@ def main(page: ft.Page):
             from screens.admin_respaldo import pantalla_admin_respaldo
             page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
 
+        elif nombre == "comparacion_consumos":
+            from screens.comparacion_consumos import pantalla_comparacion_consumos
+            page.add(pantalla_comparacion_consumos(page, mostrar_pantalla))
+
         elif nombre == "reportes":
             from screens.reportes import pantalla_reportes
             page.add(pantalla_reportes(page, mostrar_pantalla))
