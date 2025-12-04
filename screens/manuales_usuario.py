@@ -36,7 +36,7 @@ def pantalla_manuales_usuario(page: ft.Page, mostrar_pantalla):
 
             row = ft.Row(
                 [
-                    ft.Text(fn, expand=True, size=16),
+                    ft.Text(fn, expand=True, size=16, color="#1F1F1F"),
                     ft.IconButton(
                         icon=ft.Icons.PICTURE_AS_PDF,
                         tooltip="Abrir PDF",
@@ -50,7 +50,7 @@ def pantalla_manuales_usuario(page: ft.Page, mostrar_pantalla):
     # Header
     header = ft.Row(
         [
-            ft.Text("Manuales de Usuario", size=24, weight=ft.FontWeight.BOLD),
+            ft.Text("Manuales de Usuario", size=24, weight=ft.FontWeight.BOLD, color="#1F1F1F"),
             ft.ElevatedButton("Volver", on_click=lambda e: mostrar_pantalla("admin"))
         ],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN
