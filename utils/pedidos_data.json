@@ -26,7 +26,7 @@
     "ingredientes": [
       "Queso extra"
     ],
-    "estado": "Horno",
+    "estado": "Empaque",
     "fecha": "2025-10-23 13:18:45"
   },
   {
@@ -40,7 +40,7 @@
     "ingredientes": [
       "Jamón"
     ],
-    "estado": "Listo",
+    "estado": "Preparación",
     "fecha": "2025-10-23 13:23:42"
   },
   {
@@ -55,7 +55,7 @@
       "Queso extra",
       "Champiñones"
     ],
-    "estado": "Horno",
+    "estado": "Empaque",
     "fecha": "2025-11-10 21:23:36"
   },
   {
@@ -85,7 +85,7 @@
       "Pepperoni",
       "Champiñones"
     ],
-    "estado": "Horno",
+    "estado": "Listo",
     "fecha": "2025-11-12 22:18:23"
   },
   {

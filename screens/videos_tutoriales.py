@@ -22,8 +22,16 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
             "url": "https://www.youtube.com/@Barka-LovePizza",
         },
         {
-            "title": "BarkaLove Pizza  - Video tutorial para realizar pedido",
+            "title": "Barka-Love Pizza  - Video tutorial para realizar pedido",
             "url": "https://youtube.com/shorts/8se_a3kwAWQ",
+        },
+        {
+            "title": "Barka-Love Pizza - Registro Panel de Administración",
+            "url": "https://youtu.be/F8UR1ji7mng?si=M86Dki6V9YUatP4V",
+        },
+        {
+            "title": "Barka-Love Pizza - Navegación en KDS (cocina)",
+            "url": "https://youtu.be/U66sOAlSejQ?si=erKi16De3AIOKo2M",
         },
     ]
 
