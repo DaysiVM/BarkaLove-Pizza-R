@@ -54,7 +54,7 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
     for v in videos:
         row = ft.Row(
             [
-                ft.Text(v["title"], expand=True, size=16),
+                ft.Text(v["title"], expand=True, size=16, color="#E63946"),
                 ft.IconButton(
                     icon=ft.Icons.PLAY_ARROW,
                     tooltip="Abrir en YouTube",
@@ -67,7 +67,7 @@ def pantalla_videos_tutoriales(page: ft.Page, mostrar_pantalla):
 
     header = ft.Row(
         [
-            ft.Text("Videos Tutoriales", size=24, weight=ft.FontWeight.BOLD),
+            ft.Text("Videos Tutoriales", size=24, weight=ft.FontWeight.BOLD, color="#E63946"),
             ft.ElevatedButton("Volver", on_click=lambda e: mostrar_pantalla("admin")),
         ],
         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
