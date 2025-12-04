@@ -98,9 +98,13 @@ def main(page: ft.Page):
             from screens.admin_respaldo import pantalla_admin_respaldo
             page.add(pantalla_admin_respaldo(page, mostrar_pantalla))
 
-        elif nombre == "errores_kpi":
-            from screens.errores_kpi import pantalla_errores_kpi
-            page.add(pantalla_errores_kpi(page, mostrar_pantalla))
+        elif nombre == "comparacion_consumos":
+            from screens.comparacion_consumos import pantalla_comparacion_consumos
+            page.add(pantalla_comparacion_consumos(page, mostrar_pantalla))
+
+        elif nombre == "reportes":
+            from screens.reportes import pantalla_reportes
+            page.add(pantalla_reportes(page, mostrar_pantalla))
 
         elif nombre == "manual_backup":
             from screens.manual_backup import pantalla_manual_backup
@@ -132,6 +136,10 @@ def main(page: ft.Page):
         elif nombre == "manuales_usuario":
             from screens.manuales_usuario import pantalla_manuales_usuario
             page.add(pantalla_manuales_usuario(page, mostrar_pantalla))
+
+        elif nombre == "documentacion_tecnica":
+            from screens.documentacion_tecnica import pantalla_documentacion_tecnica
+            page.add(pantalla_documentacion_tecnica(page, mostrar_pantalla))
 
         elif nombre == "videos_tutoriales":
             from screens.videos_tutoriales import pantalla_videos_tutoriales

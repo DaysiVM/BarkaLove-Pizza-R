@@ -114,20 +114,102 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
     last_update_txt = ft.Text("Última actualización: —", size=12, color=GRIS)
     low_stock_txt = ft.Text("", size=12, color=ROJO)
 
-    spark_ventas = ft.Text("", size=16, color=AZUL)
-    spark_produ = ft.Text("", size=16, color=VERDE)
-    spark_costos = ft.Text("", size=16, color=ROJO)
+    card_reportes = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Reportes Históricos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Consulta ventas, gastos, inventario y daños.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=AZUL, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("reportes")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
+
+    card_comparacion = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Comparación consumos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Compara consumo entre turnos por rango de fechas.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=AZUL, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("comparacion_consumos")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
+
+    card_respaldo = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Respaldo de datos", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Gestiona copias de seguridad: crear, restaurar y descargar.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=VERDE, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("admin_respaldo")
+                ),
+            ],
+            spacing=6,
+        ),
+    )
 
     btn_refresh = ft.ElevatedButton("Actualizar ahora", icon=ft.Icons.REFRESH, bgcolor=AZUL, color="white", height=36)
     toggle_autorefresh = ft.Switch(label="Auto-refresh", value=True)
 
-    card_ventas = ft.Container(
-        bgcolor="white", border_radius=12, padding=12,
-        content=ft.Column([ft.Text("Ventas (USD)", size=12, color=GRIS), ventas_lbl, spark_ventas], spacing=6)
+    card_documentacion_tecnica = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Documentación técnica", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Abre el PDF de documentación técnica del sistema.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=VERDE, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("documentacion_tecnica")
+                ),
+            ],
+            spacing=6,
+        ),
     )
-    card_produ = ft.Container(
-        bgcolor="white", border_radius=12, padding=12,
-        content=ft.Column([ft.Text("Producción (u)", size=12, color=GRIS), produ_lbl, spark_produ], spacing=6)
+
+    card_videos_tutoriales = ft.Container(
+        bgcolor="white",
+        border_radius=12,
+        padding=16,
+        content=ft.Column(
+            [
+                ft.Text("Videos tutoriales", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
+                ft.Text("Accede a videos de apoyo y tutoriales en YouTube.", size=14, color=GRIS),
+                ft.Container(height=8),
+                ft.ElevatedButton(
+                    "Abrir",
+                    bgcolor=AZUL, color="white", height=40,
+                    on_click=lambda _: mostrar_pantalla("videos_tutoriales")
+                ),
+            ],
+            spacing=6,
+        ),
     )
     card_costos = ft.Container(
         bgcolor="white", border_radius=12, padding=12,
@@ -136,12 +218,16 @@ def pantalla_admin(page: ft.Page, mostrar_pantalla):
 
     kpi_row = ft.Row([card_ventas, card_produ, card_costos], spacing=12, alignment=ft.MainAxisAlignment.SPACE_EVENLY)
 
-    dashboard_header = ft.Row(
-        [
-            ft.Text("📈 Dashboard (tiempo real)", size=18, weight=ft.FontWeight.W_600, color=NEGRO),
-            ft.Container(expand=True),
-            toggle_autorefresh,
-            btn_refresh,
+    grid = ft.ResponsiveRow(
+        controls=[
+            ft.Container(card_recetas, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_kds, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_reportes, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_comparacion, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_respaldo, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_manuales_usuario, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_videos_tutoriales, col={"xs": 12, "md": 6, "lg": 6}),
+            ft.Container(card_documentacion_tecnica, col={"xs": 12, "md": 6, "lg": 6}),
         ],
         vertical_alignment=ft.CrossAxisAlignment.CENTER,
     )
